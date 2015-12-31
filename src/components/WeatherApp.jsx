@@ -15,15 +15,14 @@ var WeatherApp = React.createClass({
   },
   componentWillMount: function(){
     HTTP.get('/data/2.5/forecast?q=Kungsbacka,se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
-      console.log(data);
       this.setState({weather: [data]});
     }.bind(this));
   },
   render: function() {
-    var todayWeatherBox = this.state.weather.map(function(item) {
+    var todayWeatherBox = this.state.weather.map(function(item, key) {
         return (
           <TodayWeatherBox
-            key={item.city.id}
+            key={key}
             city={item.city.name}
             date={item.list[0].dt_txt}
             temp={item.list[0].main.temp}
@@ -32,11 +31,11 @@ var WeatherApp = React.createClass({
           />
         );
     });
-    
-    var futureWeatherBox = this.state.weather.map(function(item) {
+
+    var futureWeatherBox = this.state.weather.map(function(item, key) {
         return (
           <FutureWeatherBox
-            key={item.city.id}
+            key={key}
             tempList={item.list}
           />
         );

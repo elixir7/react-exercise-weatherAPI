@@ -23611,38 +23611,8 @@ var Base = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      null,
-      React.createElement(
-        "nav",
-        { className: "navbar navbar-default" },
-        React.createElement(
-          "div",
-          { className: "container-fluid" },
-          React.createElement(
-            "div",
-            { className: "navbar-header" },
-            React.createElement(
-              "a",
-              { className: "navbar-brand", href: "#" },
-              React.createElement("img", { alt: "Brand", style: logoStyle, src: "http://img3.wikia.nocookie.net/__cb20090104011038/uncyclopedia/images/4/4c/Striped_apple_logo.png" })
-            )
-          ),
-          React.createElement(
-            "div",
-            { className: "col-md-12" },
-            React.createElement(
-              "h4",
-              { className: "navbar-text", style: appName },
-              "Weather App"
-            )
-          )
-        )
-      ),
-      React.createElement(
-        "div",
-        { className: "container-fluid" },
-        this.props.children
-      )
+      { className: "container-fluid" },
+      this.props.children
     );
   }
 });
@@ -23666,12 +23636,11 @@ var FutureWeatherBox = React.createClass({
   displayName: 'FutureWeatherBox',
 
   render: function () {
-    var futureWeatherBoxItem = this.props.tempList.map(function (item) {
+    var futureWeatherBoxItem = this.props.tempList.map(function (item, key) {
       return React.createElement(
         'div',
-        null,
+        { key: key },
         React.createElement(FutureWeatherBoxItem, {
-          key: item.dt,
           date: item.dt_txt,
           temp: item.main.temp
         }),
@@ -23697,8 +23666,8 @@ module.exports = FutureWeatherBox;
 var React = require('react');
 
 var iconStyle = {
-  fontSize: 18,
-  marginTop: 7
+  fontSize: 23,
+  marginTop: 12
 };
 var fontColor = {
   color: "#333333"
@@ -23737,7 +23706,7 @@ var FutureWeatherBoxItem = React.createClass({
           React.createElement(
             "h5",
             { className: "pull-right" },
-            this.props.temp,
+            Math.round(this.props.temp),
             " °C"
           )
         )
@@ -23762,7 +23731,7 @@ var mainContent = {
   paddingBottom: 70
 };
 var subContent = {
-  fontSize: 16,
+  fontSize: 18,
   marginRight: 10
 };
 var subText = {
@@ -23770,6 +23739,57 @@ var subText = {
 };
 var subMargin = {
   marginBottom: 20
+};
+
+var wind = function (deg) {
+  var angle = deg;
+  var object = {
+    direction: "",
+    compassClass: ""
+  };
+
+  if (angle >= 0 && angle <= 22.5 || angle > 337.5 && angle <= 360) {
+    //North
+    object.direction = "North";
+    object.compassClass = "wi wi-wind wi-from-n";
+  } else if (angle > 22.5 && angle <= 67.5) {
+    //North East
+    object.direction = "North East";
+    object.compassClass = "wi wi-wind wi-from-ne";
+  } else if (angle > 67.5 && angle <= 112.5) {
+    //East
+    object.direction = "East";
+    object.compassClass = "wi wi-wind wi-from-e";
+  } else if (angle > 112.5 && angle <= 157.5) {
+    //South East
+    object.direction = "South East";
+    object.compassClass = "wi wi-wind wi-from-se";
+  } else if (angle > 157.5 && angle <= 202.5) {
+    //South
+    object.direction = "South";
+    object.compassClass = "wi wi-wind wi-from-s";
+  } else if (angle > 202.5 && angle <= 247.5) {
+    //South West
+    object.direction = "South West";
+    object.compassClass = "wi wi-wind wi-from-sw";
+  } else if (angle > 247.5 && angle <= 292.5) {
+    //West
+    object.direction = "West";
+    object.compassClass = "wi wi-wind wi-from-w";
+  } else if (angle > 292.5 && angle <= 337.5) {
+    //North West
+    object.direction = "North East";
+    object.compassClass = "wi wi-wind wi-from-ne";
+  }
+
+  return object;
+};
+
+var evalTemp = function (temp, windSpeed) {
+  //Calculates the windchill, info here: http://www.freemathhelp.com/wind-chill.html
+  var vPow = Math.pow(windSpeed, 0.16);
+  var feelsLike = Math.round(13.12 + 0.6215 * temp - 11.37 * vPow + 0.3965 * temp * vPow);
+  return feelsLike;
 };
 
 var TodayWeatherBox = React.createClass({
@@ -23811,13 +23831,15 @@ var TodayWeatherBox = React.createClass({
             React.createElement(
               "h1",
               null,
-              this.props.temp,
+              Math.round(this.props.temp),
               " °C"
             ),
             React.createElement(
               "h5",
               null,
-              "Feels like 13 °C"
+              "Feels like ",
+              evalTemp(this.props.temp, this.props.windSpeed),
+              " °C"
             )
           )
         ),
@@ -23827,12 +23849,11 @@ var TodayWeatherBox = React.createClass({
           React.createElement(
             "div",
             { className: "col-xs-6 text-center" },
-            React.createElement("i", { className: "wi wi-wind towards-0-deg", style: subContent }),
+            React.createElement("i", { className: wind(this.props.windAngle).compassClass, style: subContent }),
             React.createElement(
               "span",
               { style: subText },
-              this.props.windAngle,
-              "°"
+              wind(this.props.windAngle).direction
             )
           ),
           React.createElement(
@@ -23842,7 +23863,7 @@ var TodayWeatherBox = React.createClass({
             React.createElement(
               "span",
               { style: subText },
-              this.props.windSpeed,
+              Math.round(this.props.windSpeed),
               " m/s"
             )
           )
@@ -23872,14 +23893,13 @@ var WeatherApp = React.createClass({
   },
   componentWillMount: function () {
     HTTP.get('/data/2.5/forecast?q=Kungsbacka,se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
-      console.log(data);
       this.setState({ weather: [data] });
     }).bind(this));
   },
   render: function () {
-    var todayWeatherBox = this.state.weather.map(function (item) {
+    var todayWeatherBox = this.state.weather.map(function (item, key) {
       return React.createElement(TodayWeatherBox, {
-        key: item.city.id,
+        key: key,
         city: item.city.name,
         date: item.list[0].dt_txt,
         temp: item.list[0].main.temp,
@@ -23888,9 +23908,9 @@ var WeatherApp = React.createClass({
       });
     });
 
-    var futureWeatherBox = this.state.weather.map(function (item) {
+    var futureWeatherBox = this.state.weather.map(function (item, key) {
       return React.createElement(FutureWeatherBox, {
-        key: item.city.id,
+        key: key,
         tempList: item.list
       });
     });

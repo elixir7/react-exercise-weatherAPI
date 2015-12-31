@@ -1,8 +1,8 @@
 var React = require('react');
 
 var iconStyle = {
-  fontSize: 18,
-  marginTop: 7
+  fontSize: 23,
+  marginTop: 12
 };
 var fontColor = {
   color: "#333333"
@@ -23,7 +23,7 @@ var FutureWeatherBoxItem = React.createClass({
                   <i className="wi wi-day-sunny" style={iconStyle}></i>
                 </div>
                 <div className="col-xs-4">
-                  <h5 className="pull-right">{this.props.temp} °C</h5>
+                  <h5 className="pull-right">{Math.round(this.props.temp)} °C</h5>
                 </div>
               </div>
             </div>

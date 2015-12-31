@@ -12,11 +12,10 @@ var hrStyle = {
 
 var FutureWeatherBox = React.createClass({
     render: function() {
-      var futureWeatherBoxItem = this.props.tempList.map(function(item) {
+      var futureWeatherBoxItem = this.props.tempList.map(function(item, key) {
           return (
-            <div>
+            <div key={key}>
               <FutureWeatherBoxItem
-                key={item.dt}
                 date={item.dt_txt}
                 temp={item.main.temp}
               />
