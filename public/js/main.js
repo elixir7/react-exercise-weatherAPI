@@ -23183,6 +23183,389 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 },{"_process":48}],206:[function(require,module,exports){
+(function() {
+  'use strict';
+
+  if (self.fetch) {
+    return
+  }
+
+  function normalizeName(name) {
+    if (typeof name !== 'string') {
+      name = String(name)
+    }
+    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+      throw new TypeError('Invalid character in header field name')
+    }
+    return name.toLowerCase()
+  }
+
+  function normalizeValue(value) {
+    if (typeof value !== 'string') {
+      value = String(value)
+    }
+    return value
+  }
+
+  function Headers(headers) {
+    this.map = {}
+
+    if (headers instanceof Headers) {
+      headers.forEach(function(value, name) {
+        this.append(name, value)
+      }, this)
+
+    } else if (headers) {
+      Object.getOwnPropertyNames(headers).forEach(function(name) {
+        this.append(name, headers[name])
+      }, this)
+    }
+  }
+
+  Headers.prototype.append = function(name, value) {
+    name = normalizeName(name)
+    value = normalizeValue(value)
+    var list = this.map[name]
+    if (!list) {
+      list = []
+      this.map[name] = list
+    }
+    list.push(value)
+  }
+
+  Headers.prototype['delete'] = function(name) {
+    delete this.map[normalizeName(name)]
+  }
+
+  Headers.prototype.get = function(name) {
+    var values = this.map[normalizeName(name)]
+    return values ? values[0] : null
+  }
+
+  Headers.prototype.getAll = function(name) {
+    return this.map[normalizeName(name)] || []
+  }
+
+  Headers.prototype.has = function(name) {
+    return this.map.hasOwnProperty(normalizeName(name))
+  }
+
+  Headers.prototype.set = function(name, value) {
+    this.map[normalizeName(name)] = [normalizeValue(value)]
+  }
+
+  Headers.prototype.forEach = function(callback, thisArg) {
+    Object.getOwnPropertyNames(this.map).forEach(function(name) {
+      this.map[name].forEach(function(value) {
+        callback.call(thisArg, value, name, this)
+      }, this)
+    }, this)
+  }
+
+  function consumed(body) {
+    if (body.bodyUsed) {
+      return Promise.reject(new TypeError('Already read'))
+    }
+    body.bodyUsed = true
+  }
+
+  function fileReaderReady(reader) {
+    return new Promise(function(resolve, reject) {
+      reader.onload = function() {
+        resolve(reader.result)
+      }
+      reader.onerror = function() {
+        reject(reader.error)
+      }
+    })
+  }
+
+  function readBlobAsArrayBuffer(blob) {
+    var reader = new FileReader()
+    reader.readAsArrayBuffer(blob)
+    return fileReaderReady(reader)
+  }
+
+  function readBlobAsText(blob) {
+    var reader = new FileReader()
+    reader.readAsText(blob)
+    return fileReaderReady(reader)
+  }
+
+  var support = {
+    blob: 'FileReader' in self && 'Blob' in self && (function() {
+      try {
+        new Blob();
+        return true
+      } catch(e) {
+        return false
+      }
+    })(),
+    formData: 'FormData' in self,
+    arrayBuffer: 'ArrayBuffer' in self
+  }
+
+  function Body() {
+    this.bodyUsed = false
+
+
+    this._initBody = function(body) {
+      this._bodyInit = body
+      if (typeof body === 'string') {
+        this._bodyText = body
+      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+        this._bodyBlob = body
+      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+        this._bodyFormData = body
+      } else if (!body) {
+        this._bodyText = ''
+      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
+        // Only support ArrayBuffers for POST method.
+        // Receiving ArrayBuffers happens via Blobs, instead.
+      } else {
+        throw new Error('unsupported BodyInit type')
+      }
+    }
+
+    if (support.blob) {
+      this.blob = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return Promise.resolve(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as blob')
+        } else {
+          return Promise.resolve(new Blob([this._bodyText]))
+        }
+      }
+
+      this.arrayBuffer = function() {
+        return this.blob().then(readBlobAsArrayBuffer)
+      }
+
+      this.text = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return readBlobAsText(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as text')
+        } else {
+          return Promise.resolve(this._bodyText)
+        }
+      }
+    } else {
+      this.text = function() {
+        var rejected = consumed(this)
+        return rejected ? rejected : Promise.resolve(this._bodyText)
+      }
+    }
+
+    if (support.formData) {
+      this.formData = function() {
+        return this.text().then(decode)
+      }
+    }
+
+    this.json = function() {
+      return this.text().then(JSON.parse)
+    }
+
+    return this
+  }
+
+  // HTTP methods whose capitalization should be normalized
+  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
+
+  function normalizeMethod(method) {
+    var upcased = method.toUpperCase()
+    return (methods.indexOf(upcased) > -1) ? upcased : method
+  }
+
+  function Request(input, options) {
+    options = options || {}
+    var body = options.body
+    if (Request.prototype.isPrototypeOf(input)) {
+      if (input.bodyUsed) {
+        throw new TypeError('Already read')
+      }
+      this.url = input.url
+      this.credentials = input.credentials
+      if (!options.headers) {
+        this.headers = new Headers(input.headers)
+      }
+      this.method = input.method
+      this.mode = input.mode
+      if (!body) {
+        body = input._bodyInit
+        input.bodyUsed = true
+      }
+    } else {
+      this.url = input
+    }
+
+    this.credentials = options.credentials || this.credentials || 'omit'
+    if (options.headers || !this.headers) {
+      this.headers = new Headers(options.headers)
+    }
+    this.method = normalizeMethod(options.method || this.method || 'GET')
+    this.mode = options.mode || this.mode || null
+    this.referrer = null
+
+    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+      throw new TypeError('Body not allowed for GET or HEAD requests')
+    }
+    this._initBody(body)
+  }
+
+  Request.prototype.clone = function() {
+    return new Request(this)
+  }
+
+  function decode(body) {
+    var form = new FormData()
+    body.trim().split('&').forEach(function(bytes) {
+      if (bytes) {
+        var split = bytes.split('=')
+        var name = split.shift().replace(/\+/g, ' ')
+        var value = split.join('=').replace(/\+/g, ' ')
+        form.append(decodeURIComponent(name), decodeURIComponent(value))
+      }
+    })
+    return form
+  }
+
+  function headers(xhr) {
+    var head = new Headers()
+    var pairs = xhr.getAllResponseHeaders().trim().split('\n')
+    pairs.forEach(function(header) {
+      var split = header.trim().split(':')
+      var key = split.shift().trim()
+      var value = split.join(':').trim()
+      head.append(key, value)
+    })
+    return head
+  }
+
+  Body.call(Request.prototype)
+
+  function Response(bodyInit, options) {
+    if (!options) {
+      options = {}
+    }
+
+    this._initBody(bodyInit)
+    this.type = 'default'
+    this.status = options.status
+    this.ok = this.status >= 200 && this.status < 300
+    this.statusText = options.statusText
+    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+    this.url = options.url || ''
+  }
+
+  Body.call(Response.prototype)
+
+  Response.prototype.clone = function() {
+    return new Response(this._bodyInit, {
+      status: this.status,
+      statusText: this.statusText,
+      headers: new Headers(this.headers),
+      url: this.url
+    })
+  }
+
+  Response.error = function() {
+    var response = new Response(null, {status: 0, statusText: ''})
+    response.type = 'error'
+    return response
+  }
+
+  var redirectStatuses = [301, 302, 303, 307, 308]
+
+  Response.redirect = function(url, status) {
+    if (redirectStatuses.indexOf(status) === -1) {
+      throw new RangeError('Invalid status code')
+    }
+
+    return new Response(null, {status: status, headers: {location: url}})
+  }
+
+  self.Headers = Headers;
+  self.Request = Request;
+  self.Response = Response;
+
+  self.fetch = function(input, init) {
+    return new Promise(function(resolve, reject) {
+      var request
+      if (Request.prototype.isPrototypeOf(input) && !init) {
+        request = input
+      } else {
+        request = new Request(input, init)
+      }
+
+      var xhr = new XMLHttpRequest()
+
+      function responseURL() {
+        if ('responseURL' in xhr) {
+          return xhr.responseURL
+        }
+
+        // Avoid security warnings on getResponseHeader when not allowed by CORS
+        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+          return xhr.getResponseHeader('X-Request-URL')
+        }
+
+        return;
+      }
+
+      xhr.onload = function() {
+        var status = (xhr.status === 1223) ? 204 : xhr.status
+        if (status < 100 || status > 599) {
+          reject(new TypeError('Network request failed'))
+          return
+        }
+        var options = {
+          status: status,
+          statusText: xhr.statusText,
+          headers: headers(xhr),
+          url: responseURL()
+        }
+        var body = 'response' in xhr ? xhr.response : xhr.responseText;
+        resolve(new Response(body, options))
+      }
+
+      xhr.onerror = function() {
+        reject(new TypeError('Network request failed'))
+      }
+
+      xhr.open(request.method, request.url, true)
+
+      if (request.credentials === 'include') {
+        xhr.withCredentials = true
+      }
+
+      if ('responseType' in xhr && support.blob) {
+        xhr.responseType = 'blob'
+      }
+
+      request.headers.forEach(function(value, name) {
+        xhr.setRequestHeader(name, value)
+      })
+
+      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
+    })
+  }
+  self.fetch.polyfill = true
+})();
+
+},{}],207:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -23191,6 +23574,7 @@ var Route = ReactRouter.Route;
 var CreateHistory = require('history/lib/createHashHistory');
 
 var Base = require('./components/Base.jsx');
+var WeatherApp = require('./components/WeatherApp.jsx');
 
 //Removes the haskey from the url and shows the page name in text
 var History = new CreateHistory({
@@ -23203,115 +23587,263 @@ var Routes = React.createElement(
   React.createElement(
     Route,
     { path: '/', component: Base },
-    React.createElement(Route, { path: '/' }),
-    React.createElement(Route, { path: '/' })
+    React.createElement(Route, { path: '/weather', component: WeatherApp })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":207,"history/lib/createHashHistory":37,"react":203,"react-router":70}],207:[function(require,module,exports){
+},{"./components/Base.jsx":208,"./components/WeatherApp.jsx":212,"history/lib/createHashHistory":37,"react":203,"react-router":70}],208:[function(require,module,exports){
 var React = require('react');
-var Link = require('react-router').Link;
+
+var logoStyle = {
+  maxHeight: 20,
+  width: "auto"
+};
+
+var appName = {
+  color: "#333333"
+};
 
 var Base = React.createClass({
-  displayName: 'Base',
+  displayName: "Base",
 
   render: function () {
     return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "nav",
+        { className: "navbar navbar-default" },
+        React.createElement(
+          "div",
+          { className: "container-fluid" },
+          React.createElement(
+            "div",
+            { className: "navbar-header" },
+            React.createElement(
+              "a",
+              { className: "navbar-brand", href: "#" },
+              React.createElement("img", { alt: "Brand", style: logoStyle, src: "http://img3.wikia.nocookie.net/__cb20090104011038/uncyclopedia/images/4/4c/Striped_apple_logo.png" })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "col-md-12" },
+            React.createElement(
+              "h4",
+              { className: "navbar-text", style: appName },
+              "Weather App"
+            )
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "container-fluid" },
+        this.props.children
+      )
+    );
+  }
+});
+
+module.exports = Base;
+
+},{"react":203}],209:[function(require,module,exports){
+var React = require('react');
+var FutureWeatherBoxItem = require('./FutureWeatherBoxItem.jsx');
+
+var boxStyle = {
+  backgroundColor: "#e7e7e7"
+};
+
+var hrStyle = {
+  margin: 0,
+  borderTop: "1px solid #333"
+};
+
+var FutureWeatherBox = React.createClass({
+  displayName: 'FutureWeatherBox',
+
+  render: function () {
+    var futureWeatherBoxItem = this.props.tempList.map(function (item) {
+      return React.createElement(
+        'div',
+        null,
+        React.createElement(FutureWeatherBoxItem, {
+          key: item.dt,
+          date: item.dt_txt,
+          temp: item.main.temp
+        }),
+        React.createElement('hr', { style: hrStyle })
+      );
+    });
+
+    return React.createElement(
       'div',
-      { className: 'container' },
+      { className: 'row future-weather-box', style: boxStyle },
       React.createElement(
         'div',
-        { className: 'row' },
+        { className: 'col-xs-12' },
+        futureWeatherBoxItem
+      )
+    );
+  }
+});
+
+module.exports = FutureWeatherBox;
+
+},{"./FutureWeatherBoxItem.jsx":210,"react":203}],210:[function(require,module,exports){
+var React = require('react');
+
+var iconStyle = {
+  fontSize: 18,
+  marginTop: 7
+};
+var fontColor = {
+  color: "#333333"
+};
+var boxStyle = {
+  paddingTop: 10,
+  paddingBottom: 10
+};
+var FutureWeatherBoxItem = React.createClass({
+  displayName: "FutureWeatherBoxItem",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "future-box-item", style: boxStyle },
+      React.createElement(
+        "div",
+        { className: "row swag", style: fontColor },
         React.createElement(
-          'div',
-          { className: 'col-md-12' },
+          "div",
+          { className: "col-xs-4" },
           React.createElement(
-            'h1',
+            "h5",
             null,
-            'React Skeleton'
-          ),
+            this.props.date
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "col-xs-4 text-center" },
+          React.createElement("i", { className: "wi wi-day-sunny", style: iconStyle })
+        ),
+        React.createElement(
+          "div",
+          { className: "col-xs-4" },
           React.createElement(
-            'h3',
-            null,
-            'What\'s included'
-          ),
+            "h5",
+            { className: "pull-right" },
+            this.props.temp,
+            " °C"
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = FutureWeatherBoxItem;
+
+},{"react":203}],211:[function(require,module,exports){
+var React = require('react');
+
+var boxStyle = {
+  backgroundColor: "#46ca75"
+};
+var mainIcon = {
+  fontSize: 48
+};
+var mainContent = {
+  paddingTop: 70,
+  paddingBottom: 70
+};
+var subContent = {
+  fontSize: 16,
+  marginRight: 10
+};
+var subText = {
+  fontSize: 16
+};
+var subMargin = {
+  marginBottom: 20
+};
+
+var TodayWeatherBox = React.createClass({
+  displayName: "TodayWeatherBox",
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { id: "today-weather-box", className: "row", style: boxStyle },
+      React.createElement(
+        "div",
+        { className: "col-xs-12" },
+        React.createElement(
+          "div",
+          { className: "row" },
           React.createElement(
-            'p',
-            null,
-            'Npm packages:'
-          ),
+            "div",
+            { className: "col-xs-12" },
+            React.createElement(
+              "h5",
+              null,
+              this.props.city,
+              ", Sweden"
+            ),
+            React.createElement(
+              "h6",
+              null,
+              this.props.date
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "row", style: mainContent },
           React.createElement(
-            'ul',
-            null,
+            "div",
+            { className: "col-xs-12 text-center" },
+            React.createElement("i", { className: "wi wi-day-sunny", style: mainIcon }),
             React.createElement(
-              'li',
+              "h1",
               null,
-              'History'
+              this.props.temp,
+              " °C"
             ),
             React.createElement(
-              'li',
+              "h5",
               null,
-              'Browserify'
-            ),
+              "Feels like 13 °C"
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "row", style: subMargin },
+          React.createElement(
+            "div",
+            { className: "col-xs-6 text-center" },
+            React.createElement("i", { className: "wi wi-wind towards-0-deg", style: subContent }),
             React.createElement(
-              'li',
-              null,
-              'Babel-preset-react'
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Http-server'
-            ),
-            React.createElement(
-              'li',
-              null,
-              'React'
-            ),
-            React.createElement(
-              'li',
-              null,
-              'React-DOM'
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Watchify'
+              "span",
+              { style: subText },
+              this.props.windAngle,
+              "°"
             )
           ),
           React.createElement(
-            'p',
-            null,
-            'Other:'
-          ),
-          React.createElement(
-            'ul',
-            null,
+            "div",
+            { className: "col-xs-6 text-center" },
+            React.createElement("i", { className: "wi wi-strong-wind", style: subContent }),
             React.createElement(
-              'li',
-              null,
-              'Bootstrap'
-            ),
-            React.createElement(
-              'li',
-              null,
-              'jQuery'
-            )
-          ),
-          React.createElement(
-            'h3',
-            null,
-            'Find it on github'
-          ),
-          React.createElement(
-            'a',
-            { href: 'https://github.com/elixir7/react-skeleton' },
-            React.createElement(
-              'button',
-              { type: 'btn', className: 'btn btn-primary' },
-              'Github'
+              "span",
+              { style: subText },
+              this.props.windSpeed,
+              " m/s"
             )
           )
         )
@@ -23320,13 +23852,83 @@ var Base = React.createClass({
   }
 });
 
-module.exports = Base;
+module.exports = TodayWeatherBox;
 
-},{"react":203,"react-router":70}],208:[function(require,module,exports){
+},{"react":203}],212:[function(require,module,exports){
+var React = require('react');
+
+var HTTP = require('../services/httpserver');
+
+var TodayWeatherBox = require('./TodayWeatherBox.jsx');
+var FutureWeatherBox = require('./FutureWeatherBox.jsx');
+
+var WeatherApp = React.createClass({
+  displayName: 'WeatherApp',
+
+  getInitialState: function () {
+    return {
+      weather: []
+    };
+  },
+  componentWillMount: function () {
+    HTTP.get('/data/2.5/forecast?q=Kungsbacka,se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+      console.log(data);
+      this.setState({ weather: [data] });
+    }).bind(this));
+  },
+  render: function () {
+    var todayWeatherBox = this.state.weather.map(function (item) {
+      return React.createElement(TodayWeatherBox, {
+        key: item.city.id,
+        city: item.city.name,
+        date: item.list[0].dt_txt,
+        temp: item.list[0].main.temp,
+        windSpeed: item.list[0].wind.speed,
+        windAngle: item.list[0].wind.deg
+      });
+    });
+
+    var futureWeatherBox = this.state.weather.map(function (item) {
+      return React.createElement(FutureWeatherBox, {
+        key: item.city.id,
+        tempList: item.list
+      });
+    });
+
+    return React.createElement(
+      'div',
+      { className: 'future-weather-app row' },
+      React.createElement(
+        'div',
+        { className: 'components col-sm-4' },
+        todayWeatherBox,
+        futureWeatherBox
+      )
+    );
+  }
+});
+
+module.exports = WeatherApp;
+
+},{"../services/httpserver":214,"./FutureWeatherBox.jsx":209,"./TodayWeatherBox.jsx":211,"react":203}],213:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":206,"react":203,"react-dom":50}]},{},[208]);
+},{"./Routes.jsx":207,"react":203,"react-dom":50}],214:[function(require,module,exports){
+var Fetch = require('whatwg-fetch');
+var baseUrl = 'http://api.openweathermap.org';
+
+var service = {
+  get: function (url) {
+    return fetch(baseUrl + url).then(function (response) {
+      return response.json();
+    });
+  }
+};
+
+module.exports = service;
+
+},{"whatwg-fetch":206}]},{},[213]);
