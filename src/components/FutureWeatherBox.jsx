@@ -18,6 +18,7 @@ var FutureWeatherBox = React.createClass({
               <FutureWeatherBoxItem
                 date={item.dt_txt}
                 temp={item.main.temp}
+                icon={item.weather[0].icon}
               />
             <hr style={hrStyle}/>
           </div>

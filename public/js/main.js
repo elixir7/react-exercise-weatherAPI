@@ -23593,7 +23593,7 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":208,"./components/WeatherApp.jsx":212,"history/lib/createHashHistory":37,"react":203,"react-router":70}],208:[function(require,module,exports){
+},{"./components/Base.jsx":208,"./components/WeatherApp.jsx":213,"history/lib/createHashHistory":37,"react":203,"react-router":70}],208:[function(require,module,exports){
 var React = require('react');
 
 var logoStyle = {
@@ -23642,7 +23642,8 @@ var FutureWeatherBox = React.createClass({
         { key: key },
         React.createElement(FutureWeatherBoxItem, {
           date: item.dt_txt,
-          temp: item.main.temp
+          temp: item.main.temp,
+          icon: item.weather[0].icon
         }),
         React.createElement('hr', { style: hrStyle })
       );
@@ -23676,6 +23677,50 @@ var boxStyle = {
   paddingTop: 10,
   paddingBottom: 10
 };
+
+//Function take a string from WeatherAPI and returns a className for showing the right icon depending on the current weather.
+var evalIcon = function (iconText) {
+  var icon = "wi ";
+  if (iconText == "01d") {
+    icon += "wi-day-sunny";
+  } else if (iconText == "02d") {
+    icon += "wi-day-cloudy";
+  } else if (iconText == "03d") {
+    icon += "wi-cloud";
+  } else if (iconText == "04d") {
+    icon += "wi-cloudy";
+  } else if (iconText == "09d") {
+    icon += "wi-rain";
+  } else if (iconText == "10d") {
+    icon += "wi-day-rain";
+  } else if (iconText == "11d") {
+    icon += "wi-thunderstorm";
+  } else if (iconText == "13d") {
+    icon += "wi-snow";
+  } else if (iconText == "50d") {
+    icon += "wi-windy";
+  } else if (iconText == "01n") {
+    icon += "wi-night-clear";
+  } else if (iconText == "02n") {
+    icon += "wi-night-alt-cloudy";
+  } else if (iconText == "03n") {
+    icon += "wi-cloud";
+  } else if (iconText == "04n") {
+    icon += "wi-cloudy";
+  } else if (iconText == "09n") {
+    icon += "wi-rain";
+  } else if (iconText == "10n") {
+    icon += "wi-night-alt-rain";
+  } else if (iconText == "11n") {
+    icon += "wi-thunderstorm";
+  } else if (iconText == "13n") {
+    icon += "wi-snow";
+  } else if (iconText == "50n") {
+    icon += "wi-windy";
+  }
+  return icon;
+};
+
 var FutureWeatherBoxItem = React.createClass({
   displayName: "FutureWeatherBoxItem",
 
@@ -23698,7 +23743,7 @@ var FutureWeatherBoxItem = React.createClass({
         React.createElement(
           "div",
           { className: "col-xs-4 text-center" },
-          React.createElement("i", { className: "wi wi-day-sunny", style: iconStyle })
+          React.createElement("i", { className: evalIcon(this.props.icon), style: iconStyle })
         ),
         React.createElement(
           "div",
@@ -23720,15 +23765,102 @@ module.exports = FutureWeatherBoxItem;
 },{"react":203}],211:[function(require,module,exports){
 var React = require('react');
 
-var boxStyle = {
-  backgroundColor: "#46ca75"
+var searchBorder = {
+  borderRadius: 50,
+  border: "2px solid #2EAD5B",
+  padding: 10,
+  paddingLeft: 20
 };
+var searchIconBorder = {
+  backgroundColor: "#45CA75",
+  borderRadius: 50,
+  border: "2px solid #2EAD5B",
+  width: 46,
+  height: 46,
+  cursor: "pointer"
+};
+var inputStyle = {
+  backgroundColor: "#46CA75",
+  border: "none",
+  width: "100%"
+};
+var searchIcon = {
+  fontSize: 14
+};
+var marginBottom = {
+  marginTop: 10,
+  marginBottom: 10
+};
+
+var SearchBox = React.createClass({
+  displayName: "SearchBox",
+
+  getInitialState: function () {
+    return {
+      text: ''
+    };
+  },
+
+  onChange: function (e) {
+    this.setState({ text: e.target.value });
+  },
+
+  handleSubmit: function (e) {
+    e.preventDefault();
+    this.setState({
+      text: ''
+    });
+    console.log(this.state.text);
+  },
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "row", style: marginBottom },
+      React.createElement(
+        "div",
+        { className: "col-xs-12" },
+        React.createElement(
+          "div",
+          { className: "row" },
+          React.createElement(
+            "form",
+            { onSubmit: this.handleSubmit },
+            React.createElement(
+              "div",
+              { className: "col-xs-9" },
+              React.createElement(
+                "div",
+                { style: searchBorder },
+                React.createElement("input", { style: inputStyle, type: "text", placeholder: "Search...", onChange: this.onChange, value: this.state.text })
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "col-xs-3" },
+              React.createElement(
+                "button",
+                { style: searchIconBorder, type: "btn" },
+                React.createElement("i", { className: "fa fa-search", style: searchIcon })
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = SearchBox;
+
+},{"react":203}],212:[function(require,module,exports){
+var React = require('react');
 var mainIcon = {
   fontSize: 48
 };
 var mainContent = {
-  paddingTop: 70,
-  paddingBottom: 70
+  paddingTop: 50,
+  paddingBottom: 50
 };
 var subContent = {
   fontSize: 18,
@@ -23792,13 +23924,56 @@ var evalTemp = function (temp, windSpeed) {
   return feelsLike;
 };
 
+//Function take a string from WeatherAPI and returns a className for showing the right icon depending on the current weather.
+var evalIcon = function (iconText) {
+  var icon = "wi ";
+  if (iconText == "01d") {
+    icon += "wi-day-sunny";
+  } else if (iconText == "02d") {
+    icon += "wi-day-cloudy";
+  } else if (iconText == "03d") {
+    icon += "wi-cloud";
+  } else if (iconText == "04d") {
+    icon += "wi-cloudy";
+  } else if (iconText == "09d") {
+    icon += "wi-rain";
+  } else if (iconText == "10d") {
+    icon += "wi-day-rain";
+  } else if (iconText == "11d") {
+    icon += "wi-thunderstorm";
+  } else if (iconText == "13d") {
+    icon += "wi-snow";
+  } else if (iconText == "50d") {
+    icon += "wi-windy";
+  } else if (iconText == "01n") {
+    icon += "wi-night-clear";
+  } else if (iconText == "02n") {
+    icon += "wi-night-alt-cloudy";
+  } else if (iconText == "03n") {
+    icon += "wi-cloud";
+  } else if (iconText == "04n") {
+    icon += "wi-cloudy";
+  } else if (iconText == "09n") {
+    icon += "wi-rain";
+  } else if (iconText == "10n") {
+    icon += "wi-night-alt-rain";
+  } else if (iconText == "11n") {
+    icon += "wi-thunderstorm";
+  } else if (iconText == "13n") {
+    icon += "wi-snow";
+  } else if (iconText == "50n") {
+    icon += "wi-windy";
+  }
+  return icon;
+};
+
 var TodayWeatherBox = React.createClass({
   displayName: "TodayWeatherBox",
 
   render: function () {
     return React.createElement(
       "div",
-      { id: "today-weather-box", className: "row", style: boxStyle },
+      { id: "today-weather-box", className: "row" },
       React.createElement(
         "div",
         { className: "col-xs-12" },
@@ -23827,7 +24002,7 @@ var TodayWeatherBox = React.createClass({
           React.createElement(
             "div",
             { className: "col-xs-12 text-center" },
-            React.createElement("i", { className: "wi wi-day-sunny", style: mainIcon }),
+            React.createElement("i", { className: evalIcon(this.props.icon), style: mainIcon }),
             React.createElement(
               "h1",
               null,
@@ -23875,24 +24050,37 @@ var TodayWeatherBox = React.createClass({
 
 module.exports = TodayWeatherBox;
 
-},{"react":203}],212:[function(require,module,exports){
+},{"react":203}],213:[function(require,module,exports){
 var React = require('react');
 
 var HTTP = require('../services/httpserver');
 
 var TodayWeatherBox = require('./TodayWeatherBox.jsx');
 var FutureWeatherBox = require('./FutureWeatherBox.jsx');
+var SearchBox = require('./SearchBox.jsx');
+
+var boxStyle = {
+  backgroundColor: "#46ca75"
+};
 
 var WeatherApp = React.createClass({
   displayName: 'WeatherApp',
 
   getInitialState: function () {
     return {
+      //DefaultCity
+      city: 'Kungsbacka',
       weather: []
     };
   },
   componentWillMount: function () {
-    HTTP.get('/data/2.5/forecast?q=Kungsbacka,se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+    HTTP.get('/data/2.5/forecast?q=' + this.state.city + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+      this.setState({ weather: [data] });
+    }).bind(this));
+  },
+  searchUpdate: function (search) {
+    this.setState({ city: search });
+    HTTP.get('/data/2.5/forecast?q=' + this.state.city + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
       this.setState({ weather: [data] });
     }).bind(this));
   },
@@ -23904,14 +24092,16 @@ var WeatherApp = React.createClass({
         date: item.list[0].dt_txt,
         temp: item.list[0].main.temp,
         windSpeed: item.list[0].wind.speed,
-        windAngle: item.list[0].wind.deg
+        windAngle: item.list[0].wind.deg,
+        icon: item.list[0].weather[0].icon
       });
     });
 
     var futureWeatherBox = this.state.weather.map(function (item, key) {
       return React.createElement(FutureWeatherBox, {
         key: key,
-        tempList: item.list
+        tempList: item.list,
+        icon: item.list
       });
     });
 
@@ -23920,7 +24110,8 @@ var WeatherApp = React.createClass({
       { className: 'future-weather-app row' },
       React.createElement(
         'div',
-        { className: 'components col-sm-4' },
+        { className: 'components col-sm-4', style: boxStyle },
+        React.createElement(SearchBox, null),
         todayWeatherBox,
         futureWeatherBox
       )
@@ -23930,14 +24121,14 @@ var WeatherApp = React.createClass({
 
 module.exports = WeatherApp;
 
-},{"../services/httpserver":214,"./FutureWeatherBox.jsx":209,"./TodayWeatherBox.jsx":211,"react":203}],213:[function(require,module,exports){
+},{"../services/httpserver":215,"./FutureWeatherBox.jsx":209,"./SearchBox.jsx":211,"./TodayWeatherBox.jsx":212,"react":203}],214:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":207,"react":203,"react-dom":50}],214:[function(require,module,exports){
+},{"./Routes.jsx":207,"react":203,"react-dom":50}],215:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var baseUrl = 'http://api.openweathermap.org';
 
@@ -23951,4 +24142,4 @@ var service = {
 
 module.exports = service;
 
-},{"whatwg-fetch":206}]},{},[213]);
+},{"whatwg-fetch":206}]},{},[214]);
