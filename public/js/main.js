@@ -24107,7 +24107,7 @@ var WeatherApp = React.createClass({
 
   handleSearch: function (search) {
     console.log("Sökord:" + search);
-    HTTP.get('/data/2.5/forecast?q=' + search + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+    HTTP.get('/data/2.5/forecast?q=' + search + '&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
       this.setState({ weather: [data] });
     }).bind(this));
   },
