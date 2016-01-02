@@ -1,0 +1,33 @@
+{
+  "name": "react-weather-app",
+  "version": "1.0.0",
+  "description": "Weather application with react",
+  "main": "index.js",
+  "scripts": {
+    "start": "watchify src/main.jsx -v -t [ babelify --presets [react] ] -o public/js/main.js",
+    "deploy": "ghpages",
+    "ghpages": "ghpages"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elixir7/react-exercise-weatherAPI"
+  },
+  "author": "Isak Åslund",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elixir7/react-exercise-weatherAPI/issues"
+  },
+  "homepage": "https://github.com/elixir7/react-exercise-weatherAPI#readme",
+  "dependencies": {
+    "babel-preset-react": "^6.3.13",
+    "babelify": "^7.2.0",
+    "ghpages": "0.0.3",
+    "history": "^1.17.0",
+    "http-server": "^0.8.5",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-router": "^1.0.3",
+    "watchify": "^3.6.1",
+    "whatwg-fetch": "^0.10.1"
+  }
+}
