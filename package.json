@@ -1,7 +1,7 @@
 {
-  "name": "react-skeleton",
+  "name": "react-weather-app",
   "version": "1.0.0",
-  "description": "Basic structure for a reacy app",
+  "description": "Weather application with react",
   "main": "index.js",
   "scripts": {
     "start": "watchify src/main.jsx -v -t [ babelify --presets [react] ] -o public/js/main.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elixir7/react-skeleton.git"
+    "url": "git+https://github.com/elixir7/react-exercise-weatherAPI"
   },
   "author": "Isak Åslund",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/elixir7/react-skeleton/issues"
+    "url": "https://github.com/elixir7/react-exercise-weatherAPI/issues"
   },
-  "homepage": "https://github.com/elixir7/react-skeleton#readme",
+  "homepage": "https://github.com/elixir7/react-exercise-weatherAPI#readme",
   "dependencies": {
     "babel-preset-react": "^6.3.13",
     "babelify": "^7.2.0",
