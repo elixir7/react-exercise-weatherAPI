@@ -1,5 +1,6 @@
 var React = require('react');
 
+//Styling
 var iconStyle = {
   fontSize: 23,
   marginTop: 12
