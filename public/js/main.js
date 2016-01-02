@@ -23672,7 +23672,7 @@ var FutureWeatherBox = React.createClass({
           'div',
           { key: key },
           React.createElement(FutureWeatherBoxItem, {
-            date: item.dt_txt.substring(8, 10) + " " + evalMonth(item.dt_txt.substring(5, 7)),
+            date: item.dt_txt.substring(8, 10) + " " + evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(11, 13) + "a.m",
             temp: item.main.temp,
             icon: item.weather[0].icon
           }),
@@ -23821,8 +23821,8 @@ var searchIcon = {
   fontSize: 14
 };
 var marginBottom = {
-  marginTop: 10,
-  marginBottom: 10
+  paddingTop: 10,
+  paddingBottom: 10
 };
 
 var SearchBox = React.createClass({
@@ -23888,11 +23888,11 @@ var mainContent = {
   paddingBottom: 50
 };
 var subContent = {
-  fontSize: 18,
+  fontSize: 20,
   marginRight: 10
 };
 var subText = {
-  fontSize: 16
+  fontSize: 18
 };
 var subMargin = {
   marginBottom: 20
@@ -24185,7 +24185,7 @@ var WeatherApp = React.createClass({
 
     return React.createElement(
       'div',
-      { className: 'future-weather-app row' },
+      { className: 'row' },
       React.createElement(
         'div',
         { className: 'components col-sm-4', style: boxStyle },

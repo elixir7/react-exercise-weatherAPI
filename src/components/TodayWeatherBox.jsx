@@ -9,11 +9,11 @@ var mainContent = {
   paddingBottom: 50
 };
 var subContent = {
-  fontSize: 18,
+  fontSize: 20,
   marginRight: 10
 };
 var subText = {
-  fontSize: 16
+  fontSize: 18
 };
 var subMargin = {
   marginBottom: 20
