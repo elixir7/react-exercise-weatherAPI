@@ -15,7 +15,10 @@ var subText = {
 };
 var subMargin = {
   marginBottom: 20
-}
+};
+var clockIcon = {
+  marginRight: 5
+};
 
 
 var wind = function(deg){
@@ -113,6 +116,7 @@ var evalIcon = function(iconText){
 };
 
 
+
 var TodayWeatherBox = React.createClass({
     render: function() {
         return (
@@ -120,8 +124,11 @@ var TodayWeatherBox = React.createClass({
             <div className="col-xs-12">
               <div className="row">
                 <div className="col-xs-12">
-                  <h5>{this.props.city}, Sweden</h5>
-                  <h6>{this.props.date}</h6>
+                  <h5>{this.props.city}, {this.props.country}</h5>
+                  <h6>
+                    <i className="fa fa-clock-o"  style={clockIcon}></i>
+                    {this.props.date.substring(11, 16)}
+                  </h6>
                 </div>
               </div>
               <div className="row" style={mainContent}>

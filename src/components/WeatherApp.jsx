@@ -15,29 +15,31 @@ var WeatherApp = React.createClass({
   getInitialState: function(){
     return(
       {
-        //DefaultCity
-        city: 'Kungsbacka',
         weather: []
       }
     );
   },
+
   componentWillMount: function(){
-    HTTP.get('/data/2.5/forecast?q='+ this.state.city + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
+    HTTP.get('/data/2.5/forecast?q='+ prompt("Search for a city: e.g London") + '&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
       this.setState({weather: [data]});
     }.bind(this));
   },
-  searchUpdate: function(search){
-    this.setState({city: search});
-    HTTP.get('/data/2.5/forecast?q='+ this.state.city + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
+
+  handleSearch: function(search){
+    console.log("Sökord:" + search);
+    HTTP.get('/data/2.5/forecast?q='+ search + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
       this.setState({weather: [data]});
     }.bind(this));
   },
+
   render: function() {
     var todayWeatherBox = this.state.weather.map(function(item, key) {
         return (
           <TodayWeatherBox
             key={key}
             city={item.city.name}
+            country={item.city.country}
             date={item.list[0].dt_txt}
             temp={item.list[0].main.temp}
             windSpeed={item.list[0].wind.speed}
@@ -60,7 +62,7 @@ var WeatherApp = React.createClass({
     return (
       <div className="future-weather-app row">
         <div className="components col-sm-4" style={boxStyle}>
-          <SearchBox />
+          <SearchBox onNewSearch={this.handleSearch}/>
           {todayWeatherBox}
           {futureWeatherBox}
         </div>

@@ -23632,21 +23632,53 @@ var hrStyle = {
   borderTop: "1px solid #333"
 };
 
+var evalMonth = function (month) {
+  var monthInWords;
+  if (month == "01") {
+    monthInWords = "Jan";
+  } else if (month == "02") {
+    monthInWords = "Feb";
+  } else if (month == "03") {
+    monthInWords = "Mar";
+  } else if (month == "04") {
+    monthInWords = "Apr";
+  } else if (month == "05") {
+    monthInWords = "May";
+  } else if (month == "06") {
+    monthInWords = "Jun";
+  } else if (month == "07") {
+    monthInWords = "Jul";
+  } else if (month == "08") {
+    monthInWords = "Aug";
+  } else if (month == "09") {
+    monthInWords = "Sep";
+  } else if (month == "010") {
+    monthInWords = "Oct";
+  } else if (month == "11") {
+    monthInWords = "Nov";
+  } else if (month == "12") {
+    monthInWords = "Dec";
+  }
+  return monthInWords;
+};
+
 var FutureWeatherBox = React.createClass({
   displayName: 'FutureWeatherBox',
 
   render: function () {
     var futureWeatherBoxItem = this.props.tempList.map(function (item, key) {
-      return React.createElement(
-        'div',
-        { key: key },
-        React.createElement(FutureWeatherBoxItem, {
-          date: item.dt_txt,
-          temp: item.main.temp,
-          icon: item.weather[0].icon
-        }),
-        React.createElement('hr', { style: hrStyle })
-      );
+      if (item.dt_txt.substring(11, 13) == "12") {
+        return React.createElement(
+          'div',
+          { key: key },
+          React.createElement(FutureWeatherBoxItem, {
+            date: item.dt_txt.substring(8, 10) + " " + evalMonth(item.dt_txt.substring(5, 7)),
+            temp: item.main.temp,
+            icon: item.weather[0].icon
+          }),
+          React.createElement('hr', { style: hrStyle })
+        );
+      }
     });
 
     return React.createElement(
@@ -23795,22 +23827,12 @@ var marginBottom = {
 var SearchBox = React.createClass({
   displayName: "SearchBox",
 
-  getInitialState: function () {
-    return {
-      text: ''
-    };
-  },
-
-  onChange: function (e) {
-    this.setState({ text: e.target.value });
-  },
-
   handleSubmit: function (e) {
     e.preventDefault();
-    this.setState({
-      text: ''
-    });
-    console.log(this.state.text);
+    if (this.refs.searchInput.value.trim() && this.props.onNewSearch) {
+      this.props.onNewSearch(this.refs.searchInput.value);
+      this.refs.searchInput.value = '';
+    }
   },
 
   render: function () {
@@ -23832,7 +23854,7 @@ var SearchBox = React.createClass({
               React.createElement(
                 "div",
                 { style: searchBorder },
-                React.createElement("input", { style: inputStyle, type: "text", placeholder: "Search...", onChange: this.onChange, value: this.state.text })
+                React.createElement("input", { style: inputStyle, ref: "searchInput", placeholder: "Search..." })
               )
             ),
             React.createElement(
@@ -23871,6 +23893,9 @@ var subText = {
 };
 var subMargin = {
   marginBottom: 20
+};
+var clockIcon = {
+  marginRight: 5
 };
 
 var wind = function (deg) {
@@ -23987,12 +24012,14 @@ var TodayWeatherBox = React.createClass({
               "h5",
               null,
               this.props.city,
-              ", Sweden"
+              ", ",
+              this.props.country
             ),
             React.createElement(
               "h6",
               null,
-              this.props.date
+              React.createElement("i", { className: "fa fa-clock-o", style: clockIcon }),
+              this.props.date.substring(11, 16)
             )
           )
         ),
@@ -24068,27 +24095,29 @@ var WeatherApp = React.createClass({
 
   getInitialState: function () {
     return {
-      //DefaultCity
-      city: 'Kungsbacka',
       weather: []
     };
   },
+
   componentWillMount: function () {
-    HTTP.get('/data/2.5/forecast?q=' + this.state.city + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+    HTTP.get('/data/2.5/forecast?q=' + prompt("Search for a city: e.g London") + '&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
       this.setState({ weather: [data] });
     }).bind(this));
   },
-  searchUpdate: function (search) {
-    this.setState({ city: search });
-    HTTP.get('/data/2.5/forecast?q=' + this.state.city + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+
+  handleSearch: function (search) {
+    console.log("Sökord:" + search);
+    HTTP.get('/data/2.5/forecast?q=' + search + ',se&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
       this.setState({ weather: [data] });
     }).bind(this));
   },
+
   render: function () {
     var todayWeatherBox = this.state.weather.map(function (item, key) {
       return React.createElement(TodayWeatherBox, {
         key: key,
         city: item.city.name,
+        country: item.city.country,
         date: item.list[0].dt_txt,
         temp: item.list[0].main.temp,
         windSpeed: item.list[0].wind.speed,
@@ -24111,7 +24140,7 @@ var WeatherApp = React.createClass({
       React.createElement(
         'div',
         { className: 'components col-sm-4', style: boxStyle },
-        React.createElement(SearchBox, null),
+        React.createElement(SearchBox, { onNewSearch: this.handleSearch }),
         todayWeatherBox,
         futureWeatherBox
       )

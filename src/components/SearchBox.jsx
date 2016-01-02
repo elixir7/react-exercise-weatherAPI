@@ -28,22 +28,12 @@ var marginBottom = {
 }
 
 var SearchBox = React.createClass({
-  getInitialState: function() {
-    return {
-      text: ''
-    };
-  },
-
-  onChange: function(e) {
-    this.setState({text: e.target.value});
-  },
-
-  handleSubmit: function(e) {
+  handleSubmit: function(e){
     e.preventDefault();
-    this.setState({
-      text: ''
-    });
-    console.log(this.state.text);
+    if (this.refs.searchInput.value.trim() && this.props.onNewSearch) {
+    	this.props.onNewSearch(this.refs.searchInput.value);
+      this.refs.searchInput.value = '';
+    }
   },
 
   render: function() {
@@ -51,10 +41,10 @@ var SearchBox = React.createClass({
       <div className="row" style={marginBottom}>
         <div className="col-xs-12">
           <div className="row">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} >
               <div className="col-xs-9">
                 <div style={searchBorder}>
-                  <input style={inputStyle} type="text" placeholder="Search..." onChange={ this.onChange } value={ this.state.text } />
+                  <input style={inputStyle} ref="searchInput" placeholder="Search..." />
                 </div>
               </div>
               <div className="col-xs-3">
