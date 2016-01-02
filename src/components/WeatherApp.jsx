@@ -106,7 +106,7 @@ var WeatherApp = React.createClass({
     });
 
     return (
-      <div className="future-weather-app row">
+      <div className="row">
         <div className="components col-sm-4" style={boxStyle}>
           <SearchBox onNewSearch={this.handleSearch}/>
           {todayWeatherBox}
