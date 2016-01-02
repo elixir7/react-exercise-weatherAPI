@@ -1,4 +1,6 @@
 var React = require('react');
+
+//Styling
 var mainIcon = {
   fontSize: 48
 };
@@ -20,7 +22,7 @@ var clockIcon = {
   marginRight: 5
 };
 
-
+//Takes a angle in degrees and returns an object with a direction where the wind is blowing from written in words and a class to show where the wind is blowing from. Used to display an icon and some text for the wind.
 var wind = function(deg){
   var angle = deg;
   var object = {
@@ -65,8 +67,8 @@ var wind = function(deg){
   return object;
 };
 
+//Calculates the windchill, info here: http://www.freemathhelp.com/wind-chill.html
 var evalTemp = function(temp, windSpeed){
-  //Calculates the windchill, info here: http://www.freemathhelp.com/wind-chill.html
   var vPow = Math.pow(windSpeed, 0.16);
   var feelsLike = Math.round(13.12 + 0.6215*temp - 11.37*vPow + 0.3965*temp*vPow);
   return (feelsLike);
@@ -125,10 +127,10 @@ var TodayWeatherBox = React.createClass({
               <div className="row">
                 <div className="col-xs-12">
                   <h5>{this.props.city}, {this.props.country}</h5>
-                  <h6>
+                  <h5>
                     <i className="fa fa-clock-o"  style={clockIcon}></i>
                     {this.props.date.substring(11, 16)}
-                  </h6>
+                  </h5>
                 </div>
               </div>
               <div className="row" style={mainContent}>
