@@ -23600,7 +23600,6 @@ var logoStyle = {
   maxHeight: 20,
   width: "auto"
 };
-
 var appName = {
   color: "#333333"
 };
