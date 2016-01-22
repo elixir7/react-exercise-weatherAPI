@@ -23570,6 +23570,7 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
+var IndexRoute = ReactRouter.IndexRoute;
 
 var CreateHistory = require('history/lib/createHashHistory');
 
@@ -23587,7 +23588,7 @@ var Routes = React.createElement(
   React.createElement(
     Route,
     { path: '/', component: Base },
-    React.createElement(Route, { path: '/weather', component: WeatherApp })
+    React.createElement(IndexRoute, { path: '/weather', component: WeatherApp })
   )
 );
 
@@ -23600,7 +23601,6 @@ var logoStyle = {
   maxHeight: 20,
   width: "auto"
 };
-
 var appName = {
   color: "#333333"
 };
@@ -24127,7 +24127,7 @@ var WeatherApp = React.createClass({
 
         //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-        HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then((function (data) {
+        HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
           this.setState({ weather: [data] });
         }).bind(this));
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
