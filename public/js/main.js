@@ -23588,7 +23588,7 @@ var Routes = React.createElement(
   React.createElement(
     Route,
     { path: '/', component: Base },
-    React.createElement(IndexRoute, { path: '/weather', component: WeatherApp })
+    React.createElement(IndexRoute, { component: WeatherApp })
   )
 );
 

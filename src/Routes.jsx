@@ -18,7 +18,7 @@ var History = new CreateHistory({
 var Routes = (
   <Router history={History}>
       <Route path="/" component={Base}>
-        <IndexRoute path="/weather" component={WeatherApp} />
+        <IndexRoute component={WeatherApp} />
       </Route>
   </Router>
 );
