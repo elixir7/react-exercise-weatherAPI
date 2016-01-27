@@ -23576,6 +23576,7 @@ var CreateHistory = require('history/lib/createHashHistory');
 
 var Base = require('./components/Base.jsx');
 var WeatherApp = require('./components/WeatherApp.jsx');
+var Intro = require('./components/Intro.jsx');
 
 //Removes the haskey from the url and shows the page name in text
 var History = new CreateHistory({
@@ -23588,13 +23589,14 @@ var Routes = React.createElement(
   React.createElement(
     Route,
     { path: '/', component: Base },
-    React.createElement(IndexRoute, { component: WeatherApp })
+    React.createElement(IndexRoute, { component: Intro }),
+    React.createElement(Route, { path: '/weather', component: WeatherApp })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":208,"./components/WeatherApp.jsx":213,"history/lib/createHashHistory":37,"react":203,"react-router":70}],208:[function(require,module,exports){
+},{"./components/Base.jsx":208,"./components/Intro.jsx":211,"./components/WeatherApp.jsx":214,"history/lib/createHashHistory":37,"react":203,"react-router":70}],208:[function(require,module,exports){
 var React = require('react');
 
 var logoStyle = {
@@ -23797,6 +23799,38 @@ module.exports = FutureWeatherBoxItem;
 
 },{"react":203}],211:[function(require,module,exports){
 var React = require('react');
+var ReactRouter = require('react-router');
+var Link = ReactRouter.Link;
+
+var Intro = React.createClass({
+  displayName: 'Intro',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'row' },
+      React.createElement(
+        'div',
+        { className: 'col-md-4' },
+        React.createElement(
+          'h2',
+          null,
+          'Intro Screen'
+        ),
+        React.createElement(
+          Link,
+          { to: '/weather' },
+          'Go!'
+        )
+      )
+    );
+  }
+});
+
+module.exports = Intro;
+
+},{"react":203,"react-router":70}],212:[function(require,module,exports){
+var React = require('react');
 
 var searchBorder = {
   borderRadius: 50,
@@ -23876,7 +23910,7 @@ var SearchBox = React.createClass({
 
 module.exports = SearchBox;
 
-},{"react":203}],212:[function(require,module,exports){
+},{"react":203}],213:[function(require,module,exports){
 var React = require('react');
 
 //Styling
@@ -24081,7 +24115,7 @@ var TodayWeatherBox = React.createClass({
 
 module.exports = TodayWeatherBox;
 
-},{"react":203}],213:[function(require,module,exports){
+},{"react":203}],214:[function(require,module,exports){
 var React = require('react');
 
 var HTTP = require('../services/httpserver');
@@ -24199,14 +24233,14 @@ var WeatherApp = React.createClass({
 
 module.exports = WeatherApp;
 
-},{"../services/httpserver":215,"./FutureWeatherBox.jsx":209,"./SearchBox.jsx":211,"./TodayWeatherBox.jsx":212,"react":203}],214:[function(require,module,exports){
+},{"../services/httpserver":216,"./FutureWeatherBox.jsx":209,"./SearchBox.jsx":212,"./TodayWeatherBox.jsx":213,"react":203}],215:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":207,"react":203,"react-dom":50}],215:[function(require,module,exports){
+},{"./Routes.jsx":207,"react":203,"react-dom":50}],216:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var baseUrl = 'http://api.openweathermap.org';
 
@@ -24220,4 +24254,4 @@ var service = {
 
 module.exports = service;
 
-},{"whatwg-fetch":206}]},{},[214]);
+},{"whatwg-fetch":206}]},{},[215]);
