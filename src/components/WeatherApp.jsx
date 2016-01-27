@@ -60,7 +60,7 @@ var WeatherApp = React.createClass({
       geolocFail();
 
       //Sends an request to OpenWeatherAPI with the default city "London"
-      HTTP.get('/data/2.5/forecast?q=London&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
+      HTTP.get('/data/2.5/forecast?q=London&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
         //Sets the data returned to the state of the component
         this.setState({weather: [data]});
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
@@ -70,7 +70,7 @@ var WeatherApp = React.createClass({
   //This function gets called when the form in the SearchBox is submited.
   handleSearch: function(search){
     //Sends an request to OpenWeatherAPI with the input of the user
-    HTTP.get('/data/2.5/forecast?q='+ search + '&units=metric&appid=2de143494c0b295cca9337e1e96b00e0').then(function(data){
+    HTTP.get('/data/2.5/forecast?q='+ search + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
       //Sets the data returned to the state of the component
       this.setState({weather: [data]});
     }.bind(this));

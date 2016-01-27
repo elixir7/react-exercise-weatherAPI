@@ -8,6 +8,8 @@ var CreateHistory = require('history/lib/createHashHistory');
 
 var Base = require('./components/Base.jsx');
 var WeatherApp = require('./components/WeatherApp.jsx');
+var Intro = require('./components/Intro.jsx');
+var Day = require('./components/Day.jsx');
 
 
 //Removes the haskey from the url and shows the page name in text
@@ -18,7 +20,9 @@ var History = new CreateHistory({
 var Routes = (
   <Router history={History}>
       <Route path="/" component={Base}>
-        <IndexRoute component={WeatherApp} />
+        <IndexRoute component={Intro} />
+        <Route path="/weather" component={WeatherApp} />
+        <Route path="/day" component={Day} />
       </Route>
   </Router>
 );
