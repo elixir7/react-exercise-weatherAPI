@@ -10,3 +10,4 @@ To try it out clone this repo. Run `npm install` and then run `http-server -p 30
 Start-view for the user to read how it works and if they want to use Geolocation or search by city.
 Change background color depending on temperature.
 Add whole day forecast when clicking on that day.
+Add a spinner to when the app is finding the location and sending API request.

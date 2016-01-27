@@ -1,4 +1,6 @@
 var React = require('react');
+var ReactRouter = require('react-router');
+var Link = ReactRouter.Link;
 
 //Styling
 var iconStyle = {
@@ -60,19 +62,21 @@ var evalIcon = function(iconText){
 var FutureWeatherBoxItem = React.createClass({
     render: function() {
         return (
-            <div className="future-box-item" style={boxStyle}>
-              <div className="row swag" style={fontColor}>
-                <div className="col-xs-4">
-                  <h5>{this.props.date}</h5>
-                </div>
-                <div className="col-xs-4 text-center">
-                  <i className={evalIcon(this.props.icon)} style={iconStyle}></i>
-                </div>
-                <div className="col-xs-4">
-                  <h5 className="pull-right">{Math.round(this.props.temp)} °C</h5>
+            <Link to="/day">
+              <div className="future-box-item" style={boxStyle}>
+                <div className="row swag" style={fontColor}>
+                  <div className="col-xs-4">
+                    <h5>{this.props.date}</h5>
+                  </div>
+                  <div className="col-xs-4 text-center">
+                    <i className={evalIcon(this.props.icon)} style={iconStyle}></i>
+                  </div>
+                  <div className="col-xs-4">
+                    <h5 className="pull-right">{Math.round(this.props.temp)} °C</h5>
+                  </div>
                 </div>
               </div>
-            </div>
+          </Link>
         );
     }
 });
