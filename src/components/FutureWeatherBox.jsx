@@ -5,11 +5,6 @@ var boxStyle = {
   backgroundColor: "#e7e7e7"
 };
 
-var hrStyle = {
-  margin: 0,
-  borderTop: "1px solid #333"
-};
-
 var evalMonth = function(month){
   var monthInWords;
   if(month == "01"){
@@ -38,33 +33,37 @@ var evalMonth = function(month){
     monthInWords = "Dec"
   }
   return monthInWords;
-};
+}
 
 var FutureWeatherBox = React.createClass({
-    render: function() {
-      var futureWeatherBoxItem = this.props.tempList.map(function(item, key) {
-        if(item.dt_txt.substring(11, 13) == "12"){
-          return (
-            <div key={key}>
-              <FutureWeatherBoxItem
-                date={item.dt_txt.substring(8, 10) + " " + evalMonth(item.dt_txt.substring(5, 7))}
-                temp={item.main.temp}
-                icon={item.weather[0].icon}
-              />
-              <hr style={hrStyle}/>
-            </div>
-          );
-        }
-      });
+  //Callbackfunction which runs "onDayClick" in "WeatherApp.jsx"
+  dayClicked: function(weatherArray, date){
+    this.props.onDayClick(weatherArray, date);
+  },
+  render: function() {
+    var futureWeatherBoxItem = this.props.tempList.map(function(item, key) {
+      if(item.dt_txt.substring(11, 13) == "12"){
+        return (
+          <FutureWeatherBoxItem
+            key={key}
+            date={evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10)}
+            temp={item.main.temp}
+            icon={item.weather[0].icon}
+            dayClicked={this.dayClicked}
+            wholeDay={this.props.wholeDay}
+          />
+        );
+      }
+    }.bind(this));
 
-      return (
-        <div className="row future-weather-box" style={boxStyle}>
-          <div className="col-xs-12">
-            {futureWeatherBoxItem}
-          </div>
+    return (
+      <div className="row future-weather-box" style={boxStyle}>
+        <div className="col-xs-12">
+          {futureWeatherBoxItem}
         </div>
-      );
-    }
+      </div>
+    );
+  }
 });
 
 module.exports = FutureWeatherBox;

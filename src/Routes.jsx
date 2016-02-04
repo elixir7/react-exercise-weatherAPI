@@ -22,7 +22,7 @@ var Routes = (
       <Route path="/" component={Base}>
         <IndexRoute component={Intro} />
         <Route path="/weather" component={WeatherApp} />
-        <Route path="/day" component={Day} />
+        <Route path="/weather/:dayId" component={Day} />
       </Route>
   </Router>
 );

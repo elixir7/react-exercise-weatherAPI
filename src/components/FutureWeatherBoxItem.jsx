@@ -14,6 +14,10 @@ var boxStyle = {
   paddingTop: 10,
   paddingBottom: 10
 };
+var hrStyle = {
+  margin: 0,
+  borderTop: "1px solid #333"
+};
 
 //Function take a string from WeatherAPI and returns a className for showing the right icon depending on the current weather.
 var evalIcon = function(iconText){
@@ -57,28 +61,34 @@ var evalIcon = function(iconText){
   }
   return (icon);
 };
-
+// <Link to={"/weather/" + this.props.date}>
 
 var FutureWeatherBoxItem = React.createClass({
-    render: function() {
-        return (
-            <Link to="/day">
-              <div className="future-box-item" style={boxStyle}>
-                <div className="row swag" style={fontColor}>
-                  <div className="col-xs-4">
-                    <h5>{this.props.date}</h5>
-                  </div>
-                  <div className="col-xs-4 text-center">
-                    <i className={evalIcon(this.props.icon)} style={iconStyle}></i>
-                  </div>
-                  <div className="col-xs-4">
-                    <h5 className="pull-right">{Math.round(this.props.temp)} °C</h5>
-                  </div>
-                </div>
+  //Clicking on an element runs the onClick function which runs the "dayClicked function in FutureWeatherBox.jsx"
+  onClick: function(){
+    this.props.dayClicked(this.props.wholeDay, this.props.date);
+
+  },
+  render: function() {
+      return (
+        <div>
+          <div className="future-box-item" style={boxStyle} onClick={this.onClick}>
+            <div className="row swag" style={fontColor}>
+              <div className="col-xs-4">
+                <h5>{this.props.date}</h5>
               </div>
-          </Link>
-        );
-    }
+              <div className="col-xs-4 text-center">
+                <i className={evalIcon(this.props.icon)} style={iconStyle}></i>
+              </div>
+              <div className="col-xs-4">
+                <h5 className="pull-right">{Math.round(this.props.temp)} °C</h5>
+              </div>
+            </div>
+          </div>
+          <hr style={hrStyle}/>
+        </div>
+      );
+  }
 });
 
 module.exports = FutureWeatherBoxItem;
