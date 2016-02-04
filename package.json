@@ -29,5 +29,8 @@
     "react-router": "^1.0.3",
     "watchify": "^3.6.1",
     "whatwg-fetch": "^0.10.1"
+  },
+  "devDependencies": {
+    "jquery": "^2.2.0"
   }
 }

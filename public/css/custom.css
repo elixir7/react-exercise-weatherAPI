@@ -1,7 +1,11 @@
-/*.swag:nth-child(odd){
-  background-color: white;
+
+html, body{
+  height: 100%;
 }
-*/
+
+a, a:hover, a:active, a:visited {
+  color: #00FFDD;
+}
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    #ffffff;
