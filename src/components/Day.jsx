@@ -4,6 +4,7 @@ var popupDay = {
   backgroundColor: "#1ab7ea",
   height: "100%",
   position: "absolute",
+  zIndex: 1,
   display: "none"
 };
 
@@ -107,34 +108,34 @@ var Day = React.createClass({
     }.bind(this));
 
     return (
-      <div className="col-sm-4" id="popupDay" style={popupDay}>
+      <div className="col-sm-12" id="popupDay" style={popupDay}>
         <div className="row">
-          <div className="col-sm-6">
+          <div className="col-xs-6">
             <i className="fa fa-times" style={timesIcon} onClick={this.props.closeDay} />
           </div>
-          <div className="col-sm-6 text-right">
+          <div className="col-xs-6 text-right">
             <i className="fa fa-info" style={infoIcon} onClick={this.props.openInfo} />
           </div>
         </div>
         <div className="row">
-          <div className="col-sm-12 text-center">
+          <div className="col-xs-12 text-center">
             <h1 style={dayTitle} id="dayTitle">{this.props.date}</h1>
           </div>
         </div>
         <div className="row">
-          <div className="col-sm-3 text-center">
+          <div className="col-xs-3 text-center">
             <i className="fa fa-clock-o" style={descIcon} />
             {times}
           </div>
-          <div className="col-sm-3 text-center">
+          <div className="col-xs-3 text-center">
             <i className="wi wi-day-cloudy" style={descIcon} />
             {weatherIcons}
           </div>
-          <div className="col-sm-3 text-center">
+          <div className="col-xs-3 text-center">
             <i className="wi wi-strong-wind" style={descIcon} />
             {winds}
           </div>
-          <div className="col-sm-3 text-center">
+          <div className="col-xs-3 text-center">
             <i className="wi wi-thermometer" style={descIcon} />
             {temps}
           </div>

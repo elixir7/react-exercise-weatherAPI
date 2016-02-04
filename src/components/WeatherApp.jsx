@@ -176,6 +176,31 @@ var WeatherApp = React.createClass({
           />
         );
     }.bind(this));
+    return (
+      <div className="row">
+        <div className="col-sm-4">
+          <div className="row">
+
+            <Info closeInfo={this.closeInfo} />
+
+            <Day closeDay={this.closeDay} openInfo={this.openInfo} date={this.state.dayDate} days={this.state.days} />
+
+            <div className="col-sm-12" style={boxStyle}>
+              <SearchBox onNewSearch={this.handleSearch}/>
+              {todayWeatherBox}
+              {futureWeatherBox}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+module.exports = WeatherApp;
+
+
 /* TodayWeatherBox without mapping it.
 <TodayWeatherBox
   city={this.state.weather[0].city.name}
@@ -186,19 +211,3 @@ var WeatherApp = React.createClass({
   windAngle={this.state.weather[0].list[0].wind.deg}
   icon={this.state.weather[0].list[0].weather[0].icon}
 />*/
-    return (
-      <div className="row">
-        <div className="components col-sm-4" style={boxStyle}>
-          <SearchBox onNewSearch={this.handleSearch}/>
-          {todayWeatherBox}
-          {futureWeatherBox}
-        </div>
-
-        <Day closeDay={this.closeDay} openInfo={this.openInfo} date={this.state.dayDate} days={this.state.days} />
-        <Info closeInfo={this.closeInfo} />
-      </div>
-    );
-  }
-});
-
-module.exports = WeatherApp;

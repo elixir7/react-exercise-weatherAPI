@@ -4,6 +4,7 @@ var popupInfo = {
   backgroundColor: "coral",
   height: "100%",
   position: "absolute",
+  zIndex: 2,
   display: "none"
 };
 
@@ -29,7 +30,7 @@ var marginBottom = {
 var Info = React.createClass({
   render: function(){
     return (
-      <div className="col-sm-4" id="popupInfo" style={popupInfo}>
+      <div className="col-sm-12" id="popupInfo" style={popupInfo}>
         <div className="row">
           <div className="col-sm-12">
             <i className="fa fa-times" style={timesIcon} onClick={this.props.closeInfo}/>

@@ -33463,6 +33463,7 @@ var popupDay = {
   backgroundColor: "#1ab7ea",
   height: "100%",
   position: "absolute",
+  zIndex: 1,
   display: "none"
 };
 
@@ -33576,18 +33577,18 @@ var Day = React.createClass({
 
     return React.createElement(
       "div",
-      { className: "col-sm-4", id: "popupDay", style: popupDay },
+      { className: "col-sm-12", id: "popupDay", style: popupDay },
       React.createElement(
         "div",
         { className: "row" },
         React.createElement(
           "div",
-          { className: "col-sm-6" },
+          { className: "col-xs-6" },
           React.createElement("i", { className: "fa fa-times", style: timesIcon, onClick: this.props.closeDay })
         ),
         React.createElement(
           "div",
-          { className: "col-sm-6 text-right" },
+          { className: "col-xs-6 text-right" },
           React.createElement("i", { className: "fa fa-info", style: infoIcon, onClick: this.props.openInfo })
         )
       ),
@@ -33596,7 +33597,7 @@ var Day = React.createClass({
         { className: "row" },
         React.createElement(
           "div",
-          { className: "col-sm-12 text-center" },
+          { className: "col-xs-12 text-center" },
           React.createElement(
             "h1",
             { style: dayTitle, id: "dayTitle" },
@@ -33609,25 +33610,25 @@ var Day = React.createClass({
         { className: "row" },
         React.createElement(
           "div",
-          { className: "col-sm-3 text-center" },
+          { className: "col-xs-3 text-center" },
           React.createElement("i", { className: "fa fa-clock-o", style: descIcon }),
           times
         ),
         React.createElement(
           "div",
-          { className: "col-sm-3 text-center" },
+          { className: "col-xs-3 text-center" },
           React.createElement("i", { className: "wi wi-day-cloudy", style: descIcon }),
           weatherIcons
         ),
         React.createElement(
           "div",
-          { className: "col-sm-3 text-center" },
+          { className: "col-xs-3 text-center" },
           React.createElement("i", { className: "wi wi-strong-wind", style: descIcon }),
           winds
         ),
         React.createElement(
           "div",
-          { className: "col-sm-3 text-center" },
+          { className: "col-xs-3 text-center" },
           React.createElement("i", { className: "wi wi-thermometer", style: descIcon }),
           temps
         )
@@ -33834,6 +33835,7 @@ var popupInfo = {
   backgroundColor: "coral",
   height: "100%",
   position: "absolute",
+  zIndex: 2,
   display: "none"
 };
 
@@ -33862,7 +33864,7 @@ var Info = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      { className: "col-sm-4", id: "popupInfo", style: popupInfo },
+      { className: "col-sm-12", id: "popupInfo", style: popupInfo },
       React.createElement(
         "div",
         { className: "row" },
@@ -34541,33 +34543,42 @@ var WeatherApp = React.createClass({
         wholeDay: this.state.weather[0].list
       });
     }).bind(this));
-    /* TodayWeatherBox without mapping it.
-    <TodayWeatherBox
-      city={this.state.weather[0].city.name}
-      country={this.state.weather[0].city.country}
-      date={this.state.weather[0].list[0].dt_txt}
-      temp={this.state.weather[0].list[0].main.temp}
-      windSpeed={this.state.weather[0].list[0].wind.speed}
-      windAngle={this.state.weather[0].list[0].wind.deg}
-      icon={this.state.weather[0].list[0].weather[0].icon}
-    />*/
     return React.createElement(
       "div",
       { className: "row" },
       React.createElement(
         "div",
-        { className: "components col-sm-4", style: boxStyle },
-        React.createElement(SearchBox, { onNewSearch: this.handleSearch }),
-        todayWeatherBox,
-        futureWeatherBox
-      ),
-      React.createElement(Day, { closeDay: this.closeDay, openInfo: this.openInfo, date: this.state.dayDate, days: this.state.days }),
-      React.createElement(Info, { closeInfo: this.closeInfo })
+        { className: "col-sm-4" },
+        React.createElement(
+          "div",
+          { className: "row" },
+          React.createElement(Info, { closeInfo: this.closeInfo }),
+          React.createElement(Day, { closeDay: this.closeDay, openInfo: this.openInfo, date: this.state.dayDate, days: this.state.days }),
+          React.createElement(
+            "div",
+            { className: "col-sm-12", style: boxStyle },
+            React.createElement(SearchBox, { onNewSearch: this.handleSearch }),
+            todayWeatherBox,
+            futureWeatherBox
+          )
+        )
+      )
     );
   }
 });
 
 module.exports = WeatherApp;
+
+/* TodayWeatherBox without mapping it.
+<TodayWeatherBox
+  city={this.state.weather[0].city.name}
+  country={this.state.weather[0].city.country}
+  date={this.state.weather[0].list[0].dt_txt}
+  temp={this.state.weather[0].list[0].main.temp}
+  windSpeed={this.state.weather[0].list[0].wind.speed}
+  windAngle={this.state.weather[0].list[0].wind.deg}
+  icon={this.state.weather[0].list[0].weather[0].icon}
+/>*/
 
 },{"../services/httpserver":219,"./Day.jsx":210,"./FutureWeatherBox.jsx":211,"./Info.jsx":213,"./SearchBox.jsx":215,"./TodayWeatherBox.jsx":216,"jquery":48,"react":204}],218:[function(require,module,exports){
 var React = require('react');
