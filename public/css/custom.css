@@ -21,3 +21,10 @@ a, a:hover, a:active, a:visited {
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
    color:    #ffffffs;
 }
+
+/* Without this responsive query the popupDay will not will the whole screen */
+@media screen and (max-width: 786px) {
+  #popupDay{
+    width: 100%;
+  }
+}
