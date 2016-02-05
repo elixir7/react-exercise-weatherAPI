@@ -6,7 +6,7 @@
   "scripts": {
     "start": "watchify src/main.jsx -v -t [ babelify --presets [react] ] -o public/js/main.js",
     "deploy": "ghpages",
-    "ghpages": "ghpages"
+    "server" : "http-server -p 3000"
   },
   "repository": {
     "type": "git",
@@ -28,9 +28,7 @@
     "react-dom": "^0.14.3",
     "react-router": "^1.0.3",
     "watchify": "^3.6.1",
-    "whatwg-fetch": "^0.10.1"
-  },
-  "devDependencies": {
+    "whatwg-fetch": "^0.10.1",
     "jquery": "^2.2.0"
   }
 }
