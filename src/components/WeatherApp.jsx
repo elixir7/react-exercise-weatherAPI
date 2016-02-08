@@ -162,8 +162,6 @@ var WeatherApp = React.createClass({
 });
 
 module.exports = WeatherApp;
-
-
 /* TodayWeatherBox without mapping it.
 <TodayWeatherBox
   city={this.state.weather[0].city.name}

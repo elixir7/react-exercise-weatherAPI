@@ -34376,42 +34376,6 @@ var TodayWeatherBox = React.createClass({
 module.exports = TodayWeatherBox;
 
 },{"react":204}],217:[function(require,module,exports){
-var evalDate = function () {
-  console.log("ran");
-  if (this.state.days.dt_txt) {
-    var month = this.state.days.dt_txt.substring(5, 7);
-    var day = this.state.days.dt_txt.substring(8, 10);
-    console.log("Month: " + month + " day: " + day);
-    var monthInWords = "";;
-    if (month == "01") {
-      monthInWords = "January " + day;
-    } else if (month == "02") {
-      monthInWords = "February " + day;
-    } else if (month == "03") {
-      monthInWords = "Mars " + day;
-    } else if (month == "04") {
-      monthInWords = "April " + day;
-    } else if (month == "05") {
-      monthInWords = "May " + day;
-    } else if (month == "06") {
-      monthInWords = "June " + day;
-    } else if (month == "07") {
-      monthInWords = "July " + day;
-    } else if (month == "08") {
-      monthInWords = "August " + day;
-    } else if (month == "09") {
-      monthInWords = "September " + day;
-    } else if (month == "010") {
-      monthInWords = "October " + day;
-    } else if (month == "11") {
-      monthInWords = "November " + day;
-    } else if (month == "12") {
-      monthInWords = "December " + day;
-    }
-    return monthInWords;
-  }
-};
-
 var React = require('react');
 var HTTP = require('../services/httpserver');
 var $ = require('jquery');
@@ -34432,7 +34396,7 @@ var pos = {
 };
 
 var WeatherApp = React.createClass({
-  displayName: "WeatherApp",
+  displayName: 'WeatherApp',
 
   getInitialState: function () {
     return {
@@ -34544,19 +34508,19 @@ var WeatherApp = React.createClass({
       });
     }).bind(this));
     return React.createElement(
-      "div",
-      { className: "row" },
+      'div',
+      { className: 'row' },
       React.createElement(
-        "div",
-        { className: "col-sm-4" },
+        'div',
+        { className: 'col-sm-4' },
         React.createElement(
-          "div",
-          { className: "row" },
+          'div',
+          { className: 'row' },
           React.createElement(Info, { closeInfo: this.closeInfo }),
           React.createElement(Day, { closeDay: this.closeDay, openInfo: this.openInfo, date: this.state.dayDate, days: this.state.days }),
           React.createElement(
-            "div",
-            { className: "col-sm-12", style: boxStyle },
+            'div',
+            { className: 'col-sm-12', style: boxStyle },
             React.createElement(SearchBox, { onNewSearch: this.handleSearch }),
             todayWeatherBox,
             futureWeatherBox
@@ -34568,7 +34532,6 @@ var WeatherApp = React.createClass({
 });
 
 module.exports = WeatherApp;
-
 /* TodayWeatherBox without mapping it.
 <TodayWeatherBox
   city={this.state.weather[0].city.name}
