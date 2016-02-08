@@ -117,12 +117,10 @@ var evalIcon = function(iconText){
   return (icon);
 };
 
-
-
 var TodayWeatherBox = React.createClass({
     render: function() {
         return (
-          <div id="today-weather-box" className="row">
+          <div id="today-weather-box" className="row" >
             <div className="col-xs-12">
               <div className="row">
                 <div className="col-xs-12">
