@@ -33410,7 +33410,6 @@ var CreateHistory = require('history/lib/createHashHistory');
 var Base = require('./components/Base.jsx');
 var WeatherApp = require('./components/WeatherApp.jsx');
 var Intro = require('./components/Intro.jsx');
-var Day = require('./components/Day.jsx');
 
 //Removes the haskey from the url and shows the page name in text
 var History = new CreateHistory({
@@ -33424,14 +33423,13 @@ var Routes = React.createElement(
     Route,
     { path: '/', component: Base },
     React.createElement(IndexRoute, { component: Intro }),
-    React.createElement(Route, { path: '/weather', component: WeatherApp }),
-    React.createElement(Route, { path: '/weather/:dayId', component: Day })
+    React.createElement(Route, { path: '/weather', component: WeatherApp })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":209,"./components/Day.jsx":210,"./components/Intro.jsx":214,"./components/WeatherApp.jsx":217,"history/lib/createHashHistory":37,"react":204,"react-router":71}],209:[function(require,module,exports){
+},{"./components/Base.jsx":209,"./components/Intro.jsx":214,"./components/WeatherApp.jsx":218,"history/lib/createHashHistory":37,"react":204,"react-router":71}],209:[function(require,module,exports){
 var React = require('react');
 
 var logoStyle = {
@@ -34172,6 +34170,44 @@ module.exports = SearchBox;
 
 },{"react":204}],216:[function(require,module,exports){
 var React = require('react');
+var $ = require('jquery');
+
+var spinner = {
+  fontSize: 120
+};
+
+var container = {
+  height: "100vh",
+  marginTop: "50%"
+};
+
+var Spinner = React.createClass({
+  displayName: 'Spinner',
+
+  componentDidUpdate: function () {
+    if (this.props.loading === false) {
+      console.log("Not Loading");
+      $("#spinnerContainer").css("display", "none");
+    }
+  },
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'row', id: 'spinnerContainer' },
+      React.createElement(
+        'div',
+        { className: 'col-xs-6 col-xs-offset-3 text-center', style: container },
+        React.createElement('i', { className: 'fa fa-spinner fa-spin', id: 'spinner', style: spinner, onClick: this.onClick })
+      )
+    );
+  }
+});
+
+module.exports = Spinner;
+
+},{"jquery":48,"react":204}],217:[function(require,module,exports){
+var React = require('react');
 
 //Styling
 var mainIcon = {
@@ -34375,7 +34411,7 @@ var TodayWeatherBox = React.createClass({
 
 module.exports = TodayWeatherBox;
 
-},{"react":204}],217:[function(require,module,exports){
+},{"react":204}],218:[function(require,module,exports){
 var React = require('react');
 var HTTP = require('../services/httpserver');
 var $ = require('jquery');
@@ -34385,9 +34421,11 @@ var FutureWeatherBox = require('./FutureWeatherBox.jsx');
 var SearchBox = require('./SearchBox.jsx');
 var Day = require('./Day.jsx');
 var Info = require('./Info.jsx');
+var Spinner = require('./Spinner.jsx');
 
 var boxStyle = {
-  backgroundColor: "#46ca75"
+  backgroundColor: "#46ca75",
+  height: "100vh"
 };
 
 var pos = {
@@ -34401,6 +34439,7 @@ var WeatherApp = React.createClass({
   getInitialState: function () {
     return {
       weather: [],
+      loading: true,
       days: [],
       dayDate: ""
     };
@@ -34408,45 +34447,49 @@ var WeatherApp = React.createClass({
 
   componentWillMount: function () {
     // Tries HTML5 geolocation
-    /*
+
     if (navigator.geolocation) {
       //Sets a timeout on 10s to let the navigator to find geolocation
       var location_timeout = setTimeout("geolocFail()", 10000);
-       navigator.geolocation.getCurrentPosition(function(position) {
+
+      navigator.geolocation.getCurrentPosition((function (position) {
         //If the position is found, stop the timeout
         clearTimeout(location_timeout);
-         //Sets the latitude and longitude to the position object
+
+        //Sets the latitude and longitude to the position object
         pos.lat = position.coords.latitude;
         pos.lon = position.coords.longitude;
-         //Console Log for knowing if the geolocation was found and showing it
-        console.log("HTML5 goelocation found, lat: " + pos.lat + " lon: " + pos.lon);
-         //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
-        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-        HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
-          //Sets the weather data returned fro OpenWeatherMap to the state of the component
-          this.setState({weather: [data]});
-        }.bind(this));
-        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-      }.bind(this), function(error) {
-        //If there is any errors getting the position the timeout will clear and fails the geolocation
-          clearTimeout(location_timeout);
-          geolocFail();
-        });
-    }
-    */
-    //change to else and remove comment to get current position
-    if (true) {
-      // Fallback if geolocation wasn't supported
-      //Fails the geolocation
-      //geolocFail();
 
-      //Sends an request to OpenWeatherAPI with the default city "London"
-      HTTP.get('/data/2.5/forecast?q=Billdal&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-        //Sets the weather data returned fro OpenWeatherMap to the state of the component
-        this.setState({ weather: [data] });
+        //Console Log for knowing if the geolocation was found and showing it
+        console.log("HTML5 goelocation found, lat: " + pos.lat + " lon: " + pos.lon);
+
+        //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-      }).bind(this));
+        HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          //Sets the weather data returned fro OpenWeatherMap to the state of the component
+          this.setState({ weather: [data], loading: false });
+        }).bind(this));
+        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+      }).bind(this), function (error) {
+        //If there is any errors getting the position the timeout will clear and fails the geolocation
+        clearTimeout(location_timeout);
+        geolocFail();
+      });
     }
+
+    //change to else and remove comment to get current position
+    else {
+        // Fallback if geolocation wasn't supported
+        //Fails the geolocation
+        //geolocFail();
+
+        //Sends an request to OpenWeatherAPI with the default city "London"
+        HTTP.get('/data/2.5/forecast?q=Billdal&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          //Sets the weather data returned fro OpenWeatherMap to the state of the component
+          this.setState({ weather: [data], loading: false });
+          //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+        }).bind(this));
+      }
     var geolocFail = function () {
       //Change this to use a default city so that something is showed instead of an error.
       alert("Geolocation was not support or allowed, try searching on a city instead.");
@@ -34457,7 +34500,7 @@ var WeatherApp = React.createClass({
     //Sends an request to OpenWeatherAPI with the input of the user
     HTTP.get('/data/2.5/forecast?q=' + search + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
       //Sets the data returned to the state of the component
-      this.setState({ weather: [data] });
+      this.setState({ weather: [data], loading: false });
     }).bind(this));
     //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
   },
@@ -34522,6 +34565,7 @@ var WeatherApp = React.createClass({
             'div',
             { className: 'col-sm-12', style: boxStyle },
             React.createElement(SearchBox, { onNewSearch: this.handleSearch }),
+            React.createElement(Spinner, { loading: this.state.loading }),
             todayWeatherBox,
             futureWeatherBox
           )
@@ -34543,14 +34587,14 @@ module.exports = WeatherApp;
   icon={this.state.weather[0].list[0].weather[0].icon}
 />*/
 
-},{"../services/httpserver":219,"./Day.jsx":210,"./FutureWeatherBox.jsx":211,"./Info.jsx":213,"./SearchBox.jsx":215,"./TodayWeatherBox.jsx":216,"jquery":48,"react":204}],218:[function(require,module,exports){
+},{"../services/httpserver":220,"./Day.jsx":210,"./FutureWeatherBox.jsx":211,"./Info.jsx":213,"./SearchBox.jsx":215,"./Spinner.jsx":216,"./TodayWeatherBox.jsx":217,"jquery":48,"react":204}],219:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":208,"react":204,"react-dom":51}],219:[function(require,module,exports){
+},{"./Routes.jsx":208,"react":204,"react-dom":51}],220:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var baseUrl = 'http://api.openweathermap.org';
 
@@ -34564,4 +34608,4 @@ var service = {
 
 module.exports = service;
 
-},{"whatwg-fetch":207}]},{},[218]);
+},{"whatwg-fetch":207}]},{},[219]);
