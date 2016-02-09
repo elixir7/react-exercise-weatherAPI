@@ -7,7 +7,7 @@ var spinner = {
 
 var container = {
   height: "100vh",
-  marginTop: "50%",
+  marginTop: "40%",
 }
 
 var Spinner = React.createClass({
