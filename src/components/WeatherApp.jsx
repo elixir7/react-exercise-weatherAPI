@@ -1,40 +1,3 @@
-var evalDate = function(){
-  console.log("ran");
-  if(this.state.days.dt_txt){
-    var month = this.state.days.dt_txt.substring(5, 7);
-    var day = this.state.days.dt_txt.substring(8, 10);
-    console.log("Month: " + month + " day: " + day);
-    var monthInWords = "";;
-    if(month == "01"){
-      monthInWords = "January " + day;
-    } else if(month == "02"){
-      monthInWords = "February " + day;
-    } else if(month == "03"){
-      monthInWords = "Mars " + day;
-    } else if(month == "04"){
-      monthInWords = "April " + day;
-    } else if(month == "05"){
-      monthInWords = "May " + day;
-    } else if(month == "06"){
-      monthInWords = "June " + day;
-    } else if(month == "07"){
-      monthInWords = "July " + day;
-    } else if(month == "08"){
-      monthInWords = "August " + day;
-    } else if(month == "09"){
-      monthInWords = "September " + day;
-    } else if(month == "010"){
-      monthInWords = "October " + day;
-    } else if(month == "11"){
-      monthInWords = "November " + day;
-    } else if(month == "12"){
-      monthInWords = "December " + day;
-    }
-    return monthInWords;
-  }
-}
-
-
 var React = require('react');
 var HTTP = require('../services/httpserver');
 var $ = require('jquery');
@@ -44,10 +7,12 @@ var FutureWeatherBox = require('./FutureWeatherBox.jsx');
 var SearchBox = require('./SearchBox.jsx');
 var Day = require('./Day.jsx');
 var Info = require('./Info.jsx');
+var Spinner = require('./Spinner.jsx')
 
 
 var boxStyle = {
-  backgroundColor: "#46ca75"
+  backgroundColor: "#46ca75",
+  height: "100vh"
 };
 
 var pos = {
@@ -60,6 +25,7 @@ var WeatherApp = React.createClass({
     return(
       {
         weather: [],
+        loading: true,
         days: [],
         dayDate: ""
       }
@@ -68,7 +34,7 @@ var WeatherApp = React.createClass({
 
   componentWillMount: function(){
     // Tries HTML5 geolocation
-    /*
+
     if (navigator.geolocation) {
       //Sets a timeout on 10s to let the navigator to find geolocation
       var location_timeout = setTimeout("geolocFail()", 10000);
@@ -88,7 +54,7 @@ var WeatherApp = React.createClass({
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
         HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
           //Sets the weather data returned fro OpenWeatherMap to the state of the component
-          this.setState({weather: [data]});
+          this.setState({weather: [data], loading: false});
         }.bind(this));
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
       }.bind(this), function(error) {
@@ -97,9 +63,9 @@ var WeatherApp = React.createClass({
           geolocFail();
         });
     }
-    */
+
     //change to else and remove comment to get current position
-    if(true) {
+    else {
       // Fallback if geolocation wasn't supported
       //Fails the geolocation
       //geolocFail();
@@ -107,7 +73,7 @@ var WeatherApp = React.createClass({
       //Sends an request to OpenWeatherAPI with the default city "London"
       HTTP.get('/data/2.5/forecast?q=Billdal&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
         //Sets the weather data returned fro OpenWeatherMap to the state of the component
-        this.setState({weather: [data]});
+        this.setState({weather: [data], loading: false});
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
       }.bind(this));
     }
@@ -121,7 +87,7 @@ var WeatherApp = React.createClass({
     //Sends an request to OpenWeatherAPI with the input of the user
     HTTP.get('/data/2.5/forecast?q='+ search + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
       //Sets the data returned to the state of the component
-      this.setState({weather: [data]});
+      this.setState({ weather: [data], loading: false});
     }.bind(this));
     //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
   },
@@ -187,6 +153,7 @@ var WeatherApp = React.createClass({
 
             <div className="col-sm-12" style={boxStyle}>
               <SearchBox onNewSearch={this.handleSearch}/>
+              <Spinner loading={this.state.loading} />
               {todayWeatherBox}
               {futureWeatherBox}
             </div>
@@ -199,8 +166,6 @@ var WeatherApp = React.createClass({
 });
 
 module.exports = WeatherApp;
-
-
 /* TodayWeatherBox without mapping it.
 <TodayWeatherBox
   city={this.state.weather[0].city.name}
