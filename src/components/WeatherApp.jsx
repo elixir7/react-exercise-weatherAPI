@@ -164,6 +164,8 @@ var WeatherApp = React.createClass({
             windSpeed={item.list[0].wind.speed}
             windAngle={item.list[0].wind.deg}
             icon={item.list[0].weather[0].icon}
+            iconID={item.list[0].weather[0].id}
+            iconDesc={item.list[0].weather[0].description}
             changeUnits={this.changeUnits}
           />
         );

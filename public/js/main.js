@@ -33486,44 +33486,128 @@ var dayTitle = {
   marginBottom: 50
 };
 
-var evalIcon = function (iconText) {
+var evalIcon = function (iconNumb, iconID) {
   var icon = "wi ";
-  if (iconText == "01d") {
-    icon += "wi-day-sunny";
-  } else if (iconText == "02d") {
-    icon += "wi-day-cloudy";
-  } else if (iconText == "03d") {
-    icon += "wi-cloud";
-  } else if (iconText == "04d") {
-    icon += "wi-cloudy";
-  } else if (iconText == "09d") {
-    icon += "wi-rain";
-  } else if (iconText == "10d") {
-    icon += "wi-day-rain";
-  } else if (iconText == "11d") {
-    icon += "wi-thunderstorm";
-  } else if (iconText == "13d") {
-    icon += "wi-snow";
-  } else if (iconText == "50d") {
-    icon += "wi-windy";
-  } else if (iconText == "01n") {
-    icon += "wi-night-clear";
-  } else if (iconText == "02n") {
-    icon += "wi-night-alt-cloudy";
-  } else if (iconText == "03n") {
-    icon += "wi-cloud";
-  } else if (iconText == "04n") {
-    icon += "wi-cloudy";
-  } else if (iconText == "09n") {
-    icon += "wi-rain";
-  } else if (iconText == "10n") {
-    icon += "wi-night-alt-rain";
-  } else if (iconText == "11n") {
-    icon += "wi-thunderstorm";
-  } else if (iconText == "13n") {
-    icon += "wi-snow";
-  } else if (iconText == "50n") {
-    icon += "wi-windy";
+  if (iconNumb.substring(2, 3) === "n") {
+    if (iconID >= 200 && iconID <= 232) {
+      icon += "wi-night-thunderstorm";
+    } else if (iconID >= 300 && iconID <= 501) {
+      icon += "wi-night-alt-rain-mix";
+    } else if (iconID >= 502 && iconID <= 504) {
+      icon += "wi-night-alt-rain";
+    } else if (iconID == 511) {
+      icon += "wi-night-alt-sleet";
+    } else if (iconID >= 520 && iconID <= 531) {
+      icon += "wi-night-alt-rain";
+    } else if (iconID >= 600 && iconID <= 602) {
+      icon += "wi-night-alt-snow";
+    } else if (iconID >= 611 && iconID <= 612) {
+      icon += "wi-night-alt-sleet";
+    } else if (iconID >= 615 && iconID <= 622) {
+      icon += "wi-night-alt-snow";
+    } else if (iconID == 701) {
+      icon += "wi-fog";
+    } else if (iconID == 711) {
+      icon += "wi-smoke";
+    } else if (iconID == 721) {
+      icon += "wi-day-haze";
+    } else if (iconID == 731 || iconID == 761) {
+      icon += "wi-dust";
+    } else if (iconID == 741) {
+      icon += "wi-night-fog";
+    } else if (iconID == 751) {
+      icon += "wi-sandstorm";
+    } else if (iconID == 762) {
+      icon += "wi-volcano";
+    } else if (iconID == 771) {
+      icon += "wi-night-alt-cloudy-windy";
+    } else if (iconID == 781) {
+      icon += "wi-tornado";
+    } else if (iconID == 800) {
+      icon += "wi-night-clear";
+    } else if (iconID >= 800 && iconID <= 802) {
+      icon += "wi-cloud";
+    } else if (iconID >= 803 && iconID <= 804) {
+      icon += "wi-cloudy";
+    } else if (iconID == 900) {
+      icon += "wi-tornado";
+    } else if (iconID >= 901 && iconID <= 902) {
+      icon += "wi-hurricane";
+    } else if (iconID == 903) {
+      icon += "wi-snowflake-cold";
+    } else if (iconID == 904) {
+      icon += "wi-hot";
+    } else if (iconID == 905) {
+      icon += "wi-windy";
+    } else if (iconID == 906) {
+      icon += "wi-hail";
+    } else if (iconID >= 951 && iconID <= 955) {
+      icon += "wi-night-alt-cloudy-windy";
+    } else if (iconID >= 956 && iconID <= 961) {
+      icon += "wi-night-alt-cloudy-gusts";
+    } else if (iconID == 962) {
+      icon += "wi-hurricane";
+    }
+  } else if (iconNumb.substring(2, 3) === "d") {
+    if (iconID >= 200 && iconID <= 232) {
+      icon += "wi-day-thunderstorm";
+    } else if (iconID >= 300 && iconID <= 501) {
+      icon += "wi-day-rain-mix";
+    } else if (iconID >= 502 && iconID <= 504) {
+      icon += "wi-day-rain";
+    } else if (iconID == 511) {
+      icon += "wi-day-sleet";
+    } else if (iconID >= 520 && iconID <= 531) {
+      icon += "wi-day-rain";
+    } else if (iconID >= 600 && iconID <= 602) {
+      icon += "wi-day-snow";
+    } else if (iconID >= 611 && iconID <= 612) {
+      icon += "wi-day-sleet";
+    } else if (iconID >= 615 && iconID <= 622) {
+      icon += "wi-day-snow";
+    } else if (iconID == 701) {
+      icon += "wi-fog";
+    } else if (iconID == 711) {
+      icon += "wi-smoke";
+    } else if (iconID == 721) {
+      icon += "wi-day-haze";
+    } else if (iconID == 731 || iconID == 761) {
+      icon += "wi-dust";
+    } else if (iconID == 741) {
+      icon += "wi-day-fog";
+    } else if (iconID == 751) {
+      icon += "wi-sandstorm";
+    } else if (iconID == 762) {
+      icon += "wi-volcano";
+    } else if (iconID == 771) {
+      icon += "wi-day-windy";
+    } else if (iconID == 781) {
+      icon += "wi-tornado";
+    } else if (iconID == 800) {
+      icon += "wi-day-sunny";
+    } else if (iconID >= 800 && iconID <= 802) {
+      icon += "wi-cloud";
+    } else if (iconID >= 803 && iconID <= 804) {
+      icon += "wi-cloudy";
+    } else if (iconID == 900) {
+      icon += "wi-tornado";
+    } else if (iconID >= 901 && iconID <= 902) {
+      icon += "wi-hurricane";
+    } else if (iconID == 903) {
+      icon += "wi-snowflake-cold";
+    } else if (iconID == 904) {
+      icon += "wi-hot";
+    } else if (iconID == 905) {
+      icon += "wi-windy";
+    } else if (iconID == 906) {
+      icon += "wi-hail";
+    } else if (iconID >= 951 && iconID <= 955) {
+      icon += "wi-day-light-wind";
+    } else if (iconID >= 956 && iconID <= 961) {
+      icon += "wi-day-cloudy-gusts";
+    } else if (iconID == 962) {
+      icon += "wi-hurricane";
+    }
   }
   return icon;
 };
@@ -33562,7 +33646,7 @@ var Day = React.createClass({
         return React.createElement(
           "p",
           { key: key },
-          React.createElement("i", { className: evalIcon(item.weather[0].icon) })
+          React.createElement("i", { className: evalIcon(item.weather[0].icon, item.weather[0].id) })
         );
       }
     }).bind(this));
@@ -33705,6 +33789,7 @@ var FutureWeatherBox = React.createClass({
           date: evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10),
           temp: item.main.temp,
           icon: item.weather[0].icon,
+          iconID: item.weather[0].id,
           dayClicked: this.dayClicked,
           wholeDay: this.props.wholeDay
         });
@@ -33748,44 +33833,128 @@ var hrStyle = {
 };
 
 //Function take a string from WeatherAPI and returns a className for showing the right icon depending on the current weather.
-var evalIcon = function (iconText) {
+var evalIcon = function (iconNumb, iconID) {
   var icon = "wi ";
-  if (iconText == "01d") {
-    icon += "wi-day-sunny";
-  } else if (iconText == "02d") {
-    icon += "wi-day-cloudy";
-  } else if (iconText == "03d") {
-    icon += "wi-cloud";
-  } else if (iconText == "04d") {
-    icon += "wi-cloudy";
-  } else if (iconText == "09d") {
-    icon += "wi-rain";
-  } else if (iconText == "10d") {
-    icon += "wi-day-rain";
-  } else if (iconText == "11d") {
-    icon += "wi-thunderstorm";
-  } else if (iconText == "13d") {
-    icon += "wi-snow";
-  } else if (iconText == "50d") {
-    icon += "wi-windy";
-  } else if (iconText == "01n") {
-    icon += "wi-night-clear";
-  } else if (iconText == "02n") {
-    icon += "wi-night-alt-cloudy";
-  } else if (iconText == "03n") {
-    icon += "wi-cloud";
-  } else if (iconText == "04n") {
-    icon += "wi-cloudy";
-  } else if (iconText == "09n") {
-    icon += "wi-rain";
-  } else if (iconText == "10n") {
-    icon += "wi-night-alt-rain";
-  } else if (iconText == "11n") {
-    icon += "wi-thunderstorm";
-  } else if (iconText == "13n") {
-    icon += "wi-snow";
-  } else if (iconText == "50n") {
-    icon += "wi-windy";
+  if (iconNumb.substring(2, 3) === "n") {
+    if (iconID >= 200 && iconID <= 232) {
+      icon += "wi-night-thunderstorm";
+    } else if (iconID >= 300 && iconID <= 501) {
+      icon += "wi-night-alt-rain-mix";
+    } else if (iconID >= 502 && iconID <= 504) {
+      icon += "wi-night-alt-rain";
+    } else if (iconID == 511) {
+      icon += "wi-night-alt-sleet";
+    } else if (iconID >= 520 && iconID <= 531) {
+      icon += "wi-night-alt-rain";
+    } else if (iconID >= 600 && iconID <= 602) {
+      icon += "wi-night-alt-snow";
+    } else if (iconID >= 611 && iconID <= 612) {
+      icon += "wi-night-alt-sleet";
+    } else if (iconID >= 615 && iconID <= 622) {
+      icon += "wi-night-alt-snow";
+    } else if (iconID == 701) {
+      icon += "wi-fog";
+    } else if (iconID == 711) {
+      icon += "wi-smoke";
+    } else if (iconID == 721) {
+      icon += "wi-day-haze";
+    } else if (iconID == 731 || iconID == 761) {
+      icon += "wi-dust";
+    } else if (iconID == 741) {
+      icon += "wi-night-fog";
+    } else if (iconID == 751) {
+      icon += "wi-sandstorm";
+    } else if (iconID == 762) {
+      icon += "wi-volcano";
+    } else if (iconID == 771) {
+      icon += "wi-night-alt-cloudy-windy";
+    } else if (iconID == 781) {
+      icon += "wi-tornado";
+    } else if (iconID == 800) {
+      icon += "wi-night-clear";
+    } else if (iconID >= 800 && iconID <= 802) {
+      icon += "wi-cloud";
+    } else if (iconID >= 803 && iconID <= 804) {
+      icon += "wi-cloudy";
+    } else if (iconID == 900) {
+      icon += "wi-tornado";
+    } else if (iconID >= 901 && iconID <= 902) {
+      icon += "wi-hurricane";
+    } else if (iconID == 903) {
+      icon += "wi-snowflake-cold";
+    } else if (iconID == 904) {
+      icon += "wi-hot";
+    } else if (iconID == 905) {
+      icon += "wi-windy";
+    } else if (iconID == 906) {
+      icon += "wi-hail";
+    } else if (iconID >= 951 && iconID <= 955) {
+      icon += "wi-night-alt-cloudy-windy";
+    } else if (iconID >= 956 && iconID <= 961) {
+      icon += "wi-night-alt-cloudy-gusts";
+    } else if (iconID == 962) {
+      icon += "wi-hurricane";
+    }
+  } else if (iconNumb.substring(2, 3) === "d") {
+    if (iconID >= 200 && iconID <= 232) {
+      icon += "wi-day-thunderstorm";
+    } else if (iconID >= 300 && iconID <= 501) {
+      icon += "wi-day-rain-mix";
+    } else if (iconID >= 502 && iconID <= 504) {
+      icon += "wi-day-rain";
+    } else if (iconID == 511) {
+      icon += "wi-day-sleet";
+    } else if (iconID >= 520 && iconID <= 531) {
+      icon += "wi-day-rain";
+    } else if (iconID >= 600 && iconID <= 602) {
+      icon += "wi-day-snow";
+    } else if (iconID >= 611 && iconID <= 612) {
+      icon += "wi-day-sleet";
+    } else if (iconID >= 615 && iconID <= 622) {
+      icon += "wi-day-snow";
+    } else if (iconID == 701) {
+      icon += "wi-fog";
+    } else if (iconID == 711) {
+      icon += "wi-smoke";
+    } else if (iconID == 721) {
+      icon += "wi-day-haze";
+    } else if (iconID == 731 || iconID == 761) {
+      icon += "wi-dust";
+    } else if (iconID == 741) {
+      icon += "wi-day-fog";
+    } else if (iconID == 751) {
+      icon += "wi-sandstorm";
+    } else if (iconID == 762) {
+      icon += "wi-volcano";
+    } else if (iconID == 771) {
+      icon += "wi-day-windy";
+    } else if (iconID == 781) {
+      icon += "wi-tornado";
+    } else if (iconID == 800) {
+      icon += "wi-day-sunny";
+    } else if (iconID >= 800 && iconID <= 802) {
+      icon += "wi-cloud";
+    } else if (iconID >= 803 && iconID <= 804) {
+      icon += "wi-cloudy";
+    } else if (iconID == 900) {
+      icon += "wi-tornado";
+    } else if (iconID >= 901 && iconID <= 902) {
+      icon += "wi-hurricane";
+    } else if (iconID == 903) {
+      icon += "wi-snowflake-cold";
+    } else if (iconID == 904) {
+      icon += "wi-hot";
+    } else if (iconID == 905) {
+      icon += "wi-windy";
+    } else if (iconID == 906) {
+      icon += "wi-hail";
+    } else if (iconID >= 951 && iconID <= 955) {
+      icon += "wi-day-light-wind";
+    } else if (iconID >= 956 && iconID <= 961) {
+      icon += "wi-day-cloudy-gusts";
+    } else if (iconID == 962) {
+      icon += "wi-hurricane";
+    }
   }
   return icon;
 };
@@ -33827,7 +33996,7 @@ var FutureWeatherBoxItem = React.createClass({
           React.createElement(
             'div',
             { className: 'col-xs-4 text-center' },
-            React.createElement('i', { className: evalIcon(this.props.icon), style: iconStyle })
+            React.createElement('i', { className: evalIcon(this.props.icon, this.props.iconID), style: iconStyle })
           ),
           React.createElement(
             'div',
@@ -34308,44 +34477,129 @@ var evalTemp = function (temp, windSpeed) {
 };
 
 //Function take a string from WeatherAPI and returns a className for showing the right icon depending on the current weather.
-var evalIcon = function (iconText) {
+
+var evalIcon = function (iconNumb, iconID) {
   var icon = "wi ";
-  if (iconText == "01d") {
-    icon += "wi-day-sunny";
-  } else if (iconText == "02d") {
-    icon += "wi-day-cloudy";
-  } else if (iconText == "03d") {
-    icon += "wi-cloud";
-  } else if (iconText == "04d") {
-    icon += "wi-cloudy";
-  } else if (iconText == "09d") {
-    icon += "wi-rain";
-  } else if (iconText == "10d") {
-    icon += "wi-day-rain";
-  } else if (iconText == "11d") {
-    icon += "wi-thunderstorm";
-  } else if (iconText == "13d") {
-    icon += "wi-snow";
-  } else if (iconText == "50d") {
-    icon += "wi-windy";
-  } else if (iconText == "01n") {
-    icon += "wi-night-clear";
-  } else if (iconText == "02n") {
-    icon += "wi-night-alt-cloudy";
-  } else if (iconText == "03n") {
-    icon += "wi-cloud";
-  } else if (iconText == "04n") {
-    icon += "wi-cloudy";
-  } else if (iconText == "09n") {
-    icon += "wi-rain";
-  } else if (iconText == "10n") {
-    icon += "wi-night-alt-rain";
-  } else if (iconText == "11n") {
-    icon += "wi-thunderstorm";
-  } else if (iconText == "13n") {
-    icon += "wi-snow";
-  } else if (iconText == "50n") {
-    icon += "wi-windy";
+  if (iconNumb.substring(2, 3) === "n") {
+    if (iconID >= 200 && iconID <= 232) {
+      icon += "wi-night-thunderstorm";
+    } else if (iconID >= 300 && iconID <= 501) {
+      icon += "wi-night-alt-rain-mix";
+    } else if (iconID >= 502 && iconID <= 504) {
+      icon += "wi-night-alt-rain";
+    } else if (iconID == 511) {
+      icon += "wi-night-alt-sleet";
+    } else if (iconID >= 520 && iconID <= 531) {
+      icon += "wi-night-alt-rain";
+    } else if (iconID >= 600 && iconID <= 602) {
+      icon += "wi-night-alt-snow";
+    } else if (iconID >= 611 && iconID <= 612) {
+      icon += "wi-night-alt-sleet";
+    } else if (iconID >= 615 && iconID <= 622) {
+      icon += "wi-night-alt-snow";
+    } else if (iconID == 701) {
+      icon += "wi-fog";
+    } else if (iconID == 711) {
+      icon += "wi-smoke";
+    } else if (iconID == 721) {
+      icon += "wi-day-haze";
+    } else if (iconID == 731 || iconID == 761) {
+      icon += "wi-dust";
+    } else if (iconID == 741) {
+      icon += "wi-night-fog";
+    } else if (iconID == 751) {
+      icon += "wi-sandstorm";
+    } else if (iconID == 762) {
+      icon += "wi-volcano";
+    } else if (iconID == 771) {
+      icon += "wi-night-alt-cloudy-windy";
+    } else if (iconID == 781) {
+      icon += "wi-tornado";
+    } else if (iconID == 800) {
+      icon += "wi-night-clear";
+    } else if (iconID >= 800 && iconID <= 802) {
+      icon += "wi-cloud";
+    } else if (iconID >= 803 && iconID <= 804) {
+      icon += "wi-cloudy";
+    } else if (iconID == 900) {
+      icon += "wi-tornado";
+    } else if (iconID >= 901 && iconID <= 902) {
+      icon += "wi-hurricane";
+    } else if (iconID == 903) {
+      icon += "wi-snowflake-cold";
+    } else if (iconID == 904) {
+      icon += "wi-hot";
+    } else if (iconID == 905) {
+      icon += "wi-windy";
+    } else if (iconID == 906) {
+      icon += "wi-hail";
+    } else if (iconID >= 951 && iconID <= 955) {
+      icon += "wi-night-alt-cloudy-windy";
+    } else if (iconID >= 956 && iconID <= 961) {
+      icon += "wi-night-alt-cloudy-gusts";
+    } else if (iconID == 962) {
+      icon += "wi-hurricane";
+    }
+  } else if (iconNumb.substring(2, 3) === "d") {
+    if (iconID >= 200 && iconID <= 232) {
+      icon += "wi-day-thunderstorm";
+    } else if (iconID >= 300 && iconID <= 501) {
+      icon += "wi-day-rain-mix";
+    } else if (iconID >= 502 && iconID <= 504) {
+      icon += "wi-day-rain";
+    } else if (iconID == 511) {
+      icon += "wi-day-sleet";
+    } else if (iconID >= 520 && iconID <= 531) {
+      icon += "wi-day-rain";
+    } else if (iconID >= 600 && iconID <= 602) {
+      icon += "wi-day-snow";
+    } else if (iconID >= 611 && iconID <= 612) {
+      icon += "wi-day-sleet";
+    } else if (iconID >= 615 && iconID <= 622) {
+      icon += "wi-day-snow";
+    } else if (iconID == 701) {
+      icon += "wi-fog";
+    } else if (iconID == 711) {
+      icon += "wi-smoke";
+    } else if (iconID == 721) {
+      icon += "wi-day-haze";
+    } else if (iconID == 731 || iconID == 761) {
+      icon += "wi-dust";
+    } else if (iconID == 741) {
+      icon += "wi-day-fog";
+    } else if (iconID == 751) {
+      icon += "wi-sandstorm";
+    } else if (iconID == 762) {
+      icon += "wi-volcano";
+    } else if (iconID == 771) {
+      icon += "wi-day-windy";
+    } else if (iconID == 781) {
+      icon += "wi-tornado";
+    } else if (iconID == 800) {
+      icon += "wi-day-sunny";
+    } else if (iconID >= 800 && iconID <= 802) {
+      icon += "wi-cloud";
+    } else if (iconID >= 803 && iconID <= 804) {
+      icon += "wi-cloudy";
+    } else if (iconID == 900) {
+      icon += "wi-tornado";
+    } else if (iconID >= 901 && iconID <= 902) {
+      icon += "wi-hurricane";
+    } else if (iconID == 903) {
+      icon += "wi-snowflake-cold";
+    } else if (iconID == 904) {
+      icon += "wi-hot";
+    } else if (iconID == 905) {
+      icon += "wi-windy";
+    } else if (iconID == 906) {
+      icon += "wi-hail";
+    } else if (iconID >= 951 && iconID <= 955) {
+      icon += "wi-day-light-wind";
+    } else if (iconID >= 956 && iconID <= 961) {
+      icon += "wi-day-cloudy-gusts";
+    } else if (iconID == 962) {
+      icon += "wi-hurricane";
+    }
   }
   return icon;
 };
@@ -34408,7 +34662,7 @@ var TodayWeatherBox = React.createClass({
           React.createElement(
             'div',
             { className: 'col-xs-12 text-center' },
-            React.createElement('i', { className: evalIcon(this.props.icon), style: mainIcon }),
+            React.createElement('i', { className: evalIcon(this.props.icon, this.props.iconID), style: mainIcon }),
             React.createElement(
               'h1',
               null,
@@ -34431,7 +34685,7 @@ var TodayWeatherBox = React.createClass({
           { className: 'row', style: subMargin },
           React.createElement(
             'div',
-            { className: 'col-xs-6 text-center' },
+            { className: 'col-xs-4 text-center' },
             React.createElement('i', { className: wind(this.props.windAngle).compassClass, style: subContent }),
             React.createElement(
               'span',
@@ -34441,7 +34695,16 @@ var TodayWeatherBox = React.createClass({
           ),
           React.createElement(
             'div',
-            { className: 'col-xs-6 text-center' },
+            { className: 'col-xs-4 text-center' },
+            React.createElement(
+              'span',
+              { style: subText },
+              this.props.iconDesc
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'col-xs-4 text-center' },
             React.createElement('i', { className: 'wi wi-strong-wind', style: subContent }),
             React.createElement(
               'span',
@@ -34666,6 +34929,8 @@ var WeatherApp = React.createClass({
         windSpeed: item.list[0].wind.speed,
         windAngle: item.list[0].wind.deg,
         icon: item.list[0].weather[0].icon,
+        iconID: item.list[0].weather[0].id,
+        iconDesc: item.list[0].weather[0].description,
         changeUnits: this.changeUnits
       });
     }).bind(this));
