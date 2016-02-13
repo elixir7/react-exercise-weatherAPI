@@ -50,6 +50,7 @@ var FutureWeatherBox = React.createClass({
             date={evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10)}
             temp={item.main.temp}
             icon={item.weather[0].icon}
+            iconID={item.weather[0].id}
             dayClicked={this.dayClicked}
             wholeDay={this.props.wholeDay}
           />
