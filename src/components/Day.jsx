@@ -70,6 +70,20 @@ var evalIcon = function(iconText){
   }
   return (icon);
 };
+var evalTempUnit = function(unit){
+  if(unit == "metric"){
+    return "°C"
+  } else if(unit == "imperial"){
+    return "°F"
+  }
+}
+var evalSpeedUnit = function(unit){
+  if(unit == "metric"){
+    return "m/s"
+  } else if(unit == "imperial"){
+    return "mph"
+  }
+}
 
 var Day = React.createClass({
 
@@ -94,7 +108,7 @@ var Day = React.createClass({
     var winds = this.props.days.map(function(item, key){
       if(item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)){
         return(
-          <p key={key}>{Math.round(item.wind.speed) + "m/s"}</p>
+          <p key={key}>{Math.round(item.wind.speed) + evalSpeedUnit(this.props.units)}</p>
         );
       }
     }.bind(this));
@@ -102,7 +116,7 @@ var Day = React.createClass({
     var temps = this.props.days.map(function(item, key){
       if(item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)){
         return(
-          <p key={key}>{Math.round(item.main.temp) + "°C"}</p>
+          <p key={key}>{Math.round(item.main.temp) + evalTempUnit(this.props.units)}</p>
         );
       }
     }.bind(this));

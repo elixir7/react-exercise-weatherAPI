@@ -33429,7 +33429,7 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":209,"./components/Intro.jsx":214,"./components/WeatherApp.jsx":218,"history/lib/createHashHistory":37,"react":204,"react-router":71}],209:[function(require,module,exports){
+},{"./components/Base.jsx":209,"./components/Intro.jsx":214,"./components/WeatherApp.jsx":219,"history/lib/createHashHistory":37,"react":204,"react-router":71}],209:[function(require,module,exports){
 var React = require('react');
 
 var logoStyle = {
@@ -33527,6 +33527,20 @@ var evalIcon = function (iconText) {
   }
   return icon;
 };
+var evalTempUnit = function (unit) {
+  if (unit == "metric") {
+    return "°C";
+  } else if (unit == "imperial") {
+    return "°F";
+  }
+};
+var evalSpeedUnit = function (unit) {
+  if (unit == "metric") {
+    return "m/s";
+  } else if (unit == "imperial") {
+    return "mph";
+  }
+};
 
 var Day = React.createClass({
   displayName: "Day",
@@ -33558,7 +33572,7 @@ var Day = React.createClass({
         return React.createElement(
           "p",
           { key: key },
-          Math.round(item.wind.speed) + "m/s"
+          Math.round(item.wind.speed) + evalSpeedUnit(this.props.units)
         );
       }
     }).bind(this));
@@ -33568,7 +33582,7 @@ var Day = React.createClass({
         return React.createElement(
           "p",
           { key: key },
-          Math.round(item.main.temp) + "°C"
+          Math.round(item.main.temp) + evalTempUnit(this.props.units)
         );
       }
     }).bind(this));
@@ -33687,6 +33701,7 @@ var FutureWeatherBox = React.createClass({
       if (item.dt_txt.substring(11, 13) == "12") {
         return React.createElement(FutureWeatherBoxItem, {
           key: key,
+          units: this.props.units,
           date: evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10),
           temp: item.main.temp,
           icon: item.weather[0].icon,
@@ -33774,7 +33789,14 @@ var evalIcon = function (iconText) {
   }
   return icon;
 };
-// <Link to={"/weather/" + this.props.date}>
+
+var evalTempUnit = function (unit) {
+  if (unit == "metric") {
+    return "°C";
+  } else if (unit == "imperial") {
+    return "°F";
+  }
+};
 
 var FutureWeatherBoxItem = React.createClass({
   displayName: 'FutureWeatherBoxItem',
@@ -33814,7 +33836,8 @@ var FutureWeatherBoxItem = React.createClass({
               'h5',
               { className: 'pull-right' },
               Math.round(this.props.temp),
-              ' °C'
+              ' ',
+              evalTempUnit(this.props.units)
             )
           )
         )
@@ -34186,7 +34209,6 @@ var Spinner = React.createClass({
 
   componentDidUpdate: function () {
     if (this.props.loading === false) {
-      console.log("Not Loading");
       $("#spinnerContainer").css("display", "none");
     }
   },
@@ -34208,6 +34230,8 @@ module.exports = Spinner;
 
 },{"jquery":48,"react":204}],217:[function(require,module,exports){
 var React = require('react');
+
+var Units = require('./Units.jsx');
 
 //Styling
 var mainIcon = {
@@ -34326,81 +34350,105 @@ var evalIcon = function (iconText) {
   return icon;
 };
 
+var evalTempUnit = function (unit) {
+  if (unit == "metric") {
+    return "°C";
+  } else if (unit == "imperial") {
+    return "°F";
+  }
+};
+
+var evalSpeedUnit = function (unit) {
+  if (unit == "metric") {
+    return "m/s";
+  } else if (unit == "imperial") {
+    return "mph";
+  }
+};
+
 var TodayWeatherBox = React.createClass({
-  displayName: "TodayWeatherBox",
+  displayName: 'TodayWeatherBox',
+
+  changeTemp: function (unit) {
+    this.props.changeUnits(unit);
+  },
 
   render: function () {
     return React.createElement(
-      "div",
-      { id: "today-weather-box", className: "row" },
+      'div',
+      { id: 'today-weather-box', className: 'row' },
       React.createElement(
-        "div",
-        { className: "col-xs-12" },
+        'div',
+        { className: 'col-xs-12' },
         React.createElement(
-          "div",
-          { className: "row" },
+          'div',
+          { className: 'row' },
           React.createElement(
-            "div",
-            { className: "col-xs-12" },
+            'div',
+            { className: 'col-xs-6' },
             React.createElement(
-              "h5",
+              'h5',
               null,
               this.props.city,
-              ", ",
+              ', ',
               this.props.country
             ),
             React.createElement(
-              "h5",
+              'h5',
               null,
-              React.createElement("i", { className: "fa fa-clock-o", style: clockIcon }),
+              React.createElement('i', { className: 'fa fa-clock-o', style: clockIcon }),
               this.props.date.substring(11, 16)
             )
-          )
+          ),
+          React.createElement(Units, { changeTemp: this.changeTemp })
         ),
         React.createElement(
-          "div",
-          { className: "row", style: mainContent },
+          'div',
+          { className: 'row', style: mainContent },
           React.createElement(
-            "div",
-            { className: "col-xs-12 text-center" },
-            React.createElement("i", { className: evalIcon(this.props.icon), style: mainIcon }),
+            'div',
+            { className: 'col-xs-12 text-center' },
+            React.createElement('i', { className: evalIcon(this.props.icon), style: mainIcon }),
             React.createElement(
-              "h1",
+              'h1',
               null,
               Math.round(this.props.temp),
-              " °C"
+              ' ',
+              evalTempUnit(this.props.units)
             ),
             React.createElement(
-              "h5",
+              'h5',
               null,
-              "Feels like ",
+              'Feels like ',
               evalTemp(this.props.temp, this.props.windSpeed),
-              " °C"
+              ' ',
+              evalTempUnit(this.props.units)
             )
           )
         ),
         React.createElement(
-          "div",
-          { className: "row", style: subMargin },
+          'div',
+          { className: 'row', style: subMargin },
           React.createElement(
-            "div",
-            { className: "col-xs-6 text-center" },
-            React.createElement("i", { className: wind(this.props.windAngle).compassClass, style: subContent }),
+            'div',
+            { className: 'col-xs-6 text-center' },
+            React.createElement('i', { className: wind(this.props.windAngle).compassClass, style: subContent }),
             React.createElement(
-              "span",
+              'span',
               { style: subText },
               wind(this.props.windAngle).direction
             )
           ),
           React.createElement(
-            "div",
-            { className: "col-xs-6 text-center" },
-            React.createElement("i", { className: "wi wi-strong-wind", style: subContent }),
+            'div',
+            { className: 'col-xs-6 text-center' },
+            React.createElement('i', { className: 'wi wi-strong-wind', style: subContent }),
             React.createElement(
-              "span",
+              'span',
               { style: subText },
               Math.round(this.props.windSpeed),
-              " m/s"
+              ' ',
+              evalSpeedUnit(this.props.units)
             )
           )
         )
@@ -34411,7 +34459,54 @@ var TodayWeatherBox = React.createClass({
 
 module.exports = TodayWeatherBox;
 
-},{"react":204}],218:[function(require,module,exports){
+},{"./Units.jsx":218,"react":204}],218:[function(require,module,exports){
+var React = require('react');
+
+var container = {
+  marginTop: 20
+};
+
+var unit = {
+  cursor: "pointer"
+};
+
+var Units = React.createClass({
+  displayName: "Units",
+
+  tempClick: function (e) {
+    this.props.changeTemp(e.target.innerHTML);
+  },
+
+  render: function () {
+    return React.createElement(
+      "div",
+      { className: "col-xs-6 text-right" },
+      React.createElement(
+        "div",
+        { style: container },
+        React.createElement(
+          "span",
+          { onClick: this.tempClick, style: unit },
+          "°C"
+        ),
+        React.createElement(
+          "span",
+          null,
+          " / "
+        ),
+        React.createElement(
+          "span",
+          { onClick: this.tempClick, style: unit },
+          "°F"
+        )
+      )
+    );
+  }
+});
+
+module.exports = Units;
+
+},{"react":204}],219:[function(require,module,exports){
 var React = require('react');
 var HTTP = require('../services/httpserver');
 var $ = require('jquery');
@@ -34438,7 +34533,12 @@ var WeatherApp = React.createClass({
 
   getInitialState: function () {
     return {
+      gps: false,
+      lat: "",
+      lon: "",
+      search: "",
       weather: [],
+      units: "metric",
       loading: true,
       days: [],
       dayDate: ""
@@ -34447,7 +34547,6 @@ var WeatherApp = React.createClass({
 
   componentWillMount: function () {
     // Tries HTML5 geolocation
-
     if (navigator.geolocation) {
       //Sets a timeout on 10s to let the navigator to find geolocation
       var location_timeout = setTimeout("geolocFail()", 10000);
@@ -34456,40 +34555,38 @@ var WeatherApp = React.createClass({
         //If the position is found, stop the timeout
         clearTimeout(location_timeout);
 
-        //Sets the latitude and longitude to the position object
-        pos.lat = position.coords.latitude;
-        pos.lon = position.coords.longitude;
+        this.setState({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+          gps: true
+        }, (function () {
+          //Console Log for knowing if the geolocation was found and showing it
+          console.log("HTML5 goelocation found, lat: " + this.state.lat + " lon: " + this.state.lon);
 
-        //Console Log for knowing if the geolocation was found and showing it
-        console.log("HTML5 goelocation found, lat: " + pos.lat + " lon: " + pos.lon);
-
-        //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
-        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-        HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-          //Sets the weather data returned fro OpenWeatherMap to the state of the component
-          this.setState({ weather: [data], loading: false });
+          //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
+          //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+            this.setState({ weather: [data], loading: false });
+          }).bind(this));
+          //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
         }).bind(this));
-        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
       }).bind(this), function (error) {
         //If there is any errors getting the position the timeout will clear and fails the geolocation
         clearTimeout(location_timeout);
         geolocFail();
       });
+    } else {
+      // Fallback if geolocation wasn't supported or allowed
+      //Fails the geolocation
+
+      //Sends an request to OpenWeatherAPI with the default city "London"
+      HTTP.get('/data/2.5/forecast?q=Billdal&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+        //Sets the weather data returned fro OpenWeatherMap to the state of the component
+        this.setState({ weather: [data], loading: false });
+        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+      }).bind(this));
     }
-
-    //change to else and remove comment to get current position
-    else {
-        // Fallback if geolocation wasn't supported
-        //Fails the geolocation
-        //geolocFail();
-
-        //Sends an request to OpenWeatherAPI with the default city "London"
-        HTTP.get('/data/2.5/forecast?q=Billdal&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-          //Sets the weather data returned fro OpenWeatherMap to the state of the component
-          this.setState({ weather: [data], loading: false });
-          //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-        }).bind(this));
-      }
     var geolocFail = function () {
       //Change this to use a default city so that something is showed instead of an error.
       alert("Geolocation was not support or allowed, try searching on a city instead.");
@@ -34498,9 +34595,9 @@ var WeatherApp = React.createClass({
   //This function gets called when the form in the SearchBox is submited.
   handleSearch: function (search) {
     //Sends an request to OpenWeatherAPI with the input of the user
-    HTTP.get('/data/2.5/forecast?q=' + search + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+    HTTP.get('/data/2.5/forecast?q=' + search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
       //Sets the data returned to the state of the component
-      this.setState({ weather: [data], loading: false });
+      this.setState({ search: search, weather: [data], loading: false, gps: false });
     }).bind(this));
     //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
   },
@@ -34523,26 +34620,61 @@ var WeatherApp = React.createClass({
     $("#popupInfo").css("display", "none");
   },
 
+  changeUnits: function (temp) {
+    if (temp == "°C" && temp.substring(1, 2) != this.state.units) {
+      this.setState({ units: "metric" }, function () {
+        if (this.state.gps == true) {
+          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+            this.setState({ weather: [data] });
+          }).bind(this));
+        } else {
+          HTTP.get('/data/2.5/forecast?q=' + this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+            //Sets the data returned to the state of the component
+            this.setState({ weather: [data] });
+          }).bind(this));
+        }
+      });
+    } else if (temp == "°F" && temp.substring(1, 2) != this.state.units) {
+      this.setState({ units: "imperial" }, function () {
+        if (this.state.gps == true) {
+          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+            this.setState({ weather: [data] });
+          }).bind(this));
+        } else {
+          HTTP.get('/data/2.5/forecast?q=' + this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+            //Sets the data returned to the state of the component
+            this.setState({ weather: [data] });
+          }).bind(this));
+        }
+      });
+    }
+  },
+
   render: function () {
     //Not sure if a map function is needed because it only need specific values for "today"
 
-    var todayWeatherBox = this.state.weather.map(function (item, key) {
+    var todayWeatherBox = this.state.weather.map((function (item, key) {
       return React.createElement(TodayWeatherBox, {
         key: key,
+        units: this.state.units,
         city: item.city.name,
         country: item.city.country,
         date: item.list[0].dt_txt,
         temp: item.list[0].main.temp,
         windSpeed: item.list[0].wind.speed,
         windAngle: item.list[0].wind.deg,
-        icon: item.list[0].weather[0].icon
+        icon: item.list[0].weather[0].icon,
+        changeUnits: this.changeUnits
       });
-    });
+    }).bind(this));
 
     //Loops threw all the data in the state of weather.
     //Should not need to be maped! If you don't map, it will render the component before the response from OpenWeatherMap arrives.
     var futureWeatherBox = this.state.weather.map((function (item, key) {
       return React.createElement(FutureWeatherBox, {
+        units: this.state.units,
         key: key,
         tempList: item.list,
         icon: item.list,
@@ -34560,7 +34692,7 @@ var WeatherApp = React.createClass({
           'div',
           { className: 'row' },
           React.createElement(Info, { closeInfo: this.closeInfo }),
-          React.createElement(Day, { closeDay: this.closeDay, openInfo: this.openInfo, date: this.state.dayDate, days: this.state.days }),
+          React.createElement(Day, { closeDay: this.closeDay, openInfo: this.openInfo, date: this.state.dayDate, days: this.state.days, units: this.state.units }),
           React.createElement(
             'div',
             { className: 'col-sm-12', style: boxStyle },
@@ -34587,14 +34719,14 @@ module.exports = WeatherApp;
   icon={this.state.weather[0].list[0].weather[0].icon}
 />*/
 
-},{"../services/httpserver":220,"./Day.jsx":210,"./FutureWeatherBox.jsx":211,"./Info.jsx":213,"./SearchBox.jsx":215,"./Spinner.jsx":216,"./TodayWeatherBox.jsx":217,"jquery":48,"react":204}],219:[function(require,module,exports){
+},{"../services/httpserver":221,"./Day.jsx":210,"./FutureWeatherBox.jsx":211,"./Info.jsx":213,"./SearchBox.jsx":215,"./Spinner.jsx":216,"./TodayWeatherBox.jsx":217,"jquery":48,"react":204}],220:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":208,"react":204,"react-dom":51}],220:[function(require,module,exports){
+},{"./Routes.jsx":208,"react":204,"react-dom":51}],221:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 var baseUrl = 'http://api.openweathermap.org';
 
@@ -34608,4 +34740,4 @@ var service = {
 
 module.exports = service;
 
-},{"whatwg-fetch":207}]},{},[219]);
+},{"whatwg-fetch":207}]},{},[220]);
