@@ -14,7 +14,6 @@ var Spinner = React.createClass({
 
   componentDidUpdate: function(){
     if(this.props.loading === false){
-      console.log("Not Loading");
       $("#spinnerContainer").css("display", "none");
     }
   },

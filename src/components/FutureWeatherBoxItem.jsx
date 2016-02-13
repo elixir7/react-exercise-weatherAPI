@@ -61,7 +61,14 @@ var evalIcon = function(iconText){
   }
   return (icon);
 };
-// <Link to={"/weather/" + this.props.date}>
+
+var evalTempUnit = function(unit){
+  if(unit == "metric"){
+    return "°C"
+  } else if(unit == "imperial"){
+    return "°F"
+  }
+}
 
 var FutureWeatherBoxItem = React.createClass({
   //Clicking on an element runs the onClick function which runs the "dayClicked function in FutureWeatherBox.jsx"
@@ -81,7 +88,7 @@ var FutureWeatherBoxItem = React.createClass({
                 <i className={evalIcon(this.props.icon)} style={iconStyle}></i>
               </div>
               <div className="col-xs-4">
-                <h5 className="pull-right">{Math.round(this.props.temp)} °C</h5>
+                <h5 className="pull-right">{Math.round(this.props.temp)} {evalTempUnit(this.props.units)}</h5>
               </div>
             </div>
           </div>

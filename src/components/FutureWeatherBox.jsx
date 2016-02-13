@@ -46,6 +46,7 @@ var FutureWeatherBox = React.createClass({
         return (
           <FutureWeatherBoxItem
             key={key}
+            units={this.props.units}
             date={evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10)}
             temp={item.main.temp}
             icon={item.weather[0].icon}

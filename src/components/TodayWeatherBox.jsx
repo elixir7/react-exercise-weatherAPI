@@ -1,5 +1,7 @@
 var React = require('react');
 
+var Units = require('./Units.jsx');
+
 //Styling
 var mainIcon = {
   fontSize: 48
@@ -117,25 +119,46 @@ var evalIcon = function(iconText){
   return (icon);
 };
 
+var evalTempUnit = function(unit){
+  if(unit == "metric"){
+    return "°C"
+  } else if(unit == "imperial"){
+    return "°F"
+  }
+}
+
+var evalSpeedUnit = function(unit){
+  if(unit == "metric"){
+    return "m/s"
+  } else if(unit == "imperial"){
+    return "mph"
+  }
+}
+
 var TodayWeatherBox = React.createClass({
+    changeTemp: function(unit){
+      this.props.changeUnits(unit);
+    },
+
     render: function() {
         return (
           <div id="today-weather-box" className="row" >
             <div className="col-xs-12">
               <div className="row">
-                <div className="col-xs-12">
+                <div className="col-xs-6">
                   <h5>{this.props.city}, {this.props.country}</h5>
                   <h5>
                     <i className="fa fa-clock-o"  style={clockIcon}></i>
                     {this.props.date.substring(11, 16)}
                   </h5>
                 </div>
+                <Units changeTemp={this.changeTemp}/>
               </div>
               <div className="row" style={mainContent}>
                 <div className="col-xs-12 text-center">
                   <i className={evalIcon(this.props.icon)} style={mainIcon}></i>
-                  <h1>{Math.round(this.props.temp)} °C</h1>
-                  <h5>Feels like {evalTemp(this.props.temp, this.props.windSpeed)} °C</h5>
+                  <h1>{Math.round(this.props.temp)} {evalTempUnit(this.props.units)}</h1>
+                  <h5>Feels like {evalTemp(this.props.temp, this.props.windSpeed)} {evalTempUnit(this.props.units)}</h5>
                 </div>
               </div>
               <div className="row" style={subMargin}>
@@ -145,7 +168,7 @@ var TodayWeatherBox = React.createClass({
                 </div>
                 <div className="col-xs-6 text-center">
                   <i className="wi wi-strong-wind" style={subContent}></i>
-                  <span style={subText}>{Math.round(this.props.windSpeed)} m/s</span>
+                  <span style={subText}>{Math.round(this.props.windSpeed)} {evalSpeedUnit(this.props.units)}</span>
                 </div>
               </div>
             </div>

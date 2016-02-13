@@ -24,7 +24,12 @@ var WeatherApp = React.createClass({
   getInitialState: function(){
     return(
       {
+        gps: false,
+        lat: "",
+        lon: "",
+        search: "",
         weather: [],
+        units: "metric",
         loading: true,
         days: [],
         dayDate: ""
@@ -34,7 +39,6 @@ var WeatherApp = React.createClass({
 
   componentWillMount: function(){
     // Tries HTML5 geolocation
-
     if (navigator.geolocation) {
       //Sets a timeout on 10s to let the navigator to find geolocation
       var location_timeout = setTimeout("geolocFail()", 10000);
@@ -43,35 +47,36 @@ var WeatherApp = React.createClass({
         //If the position is found, stop the timeout
         clearTimeout(location_timeout);
 
-        //Sets the latitude and longitude to the position object
-        pos.lat = position.coords.latitude;
-        pos.lon = position.coords.longitude;
+        this.setState(
+          {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+            gps: true
+          },
+          function(){
+            //Console Log for knowing if the geolocation was found and showing it
+            console.log("HTML5 goelocation found, lat: " + this.state.lat + " lon: " + this.state.lon);
 
-        //Console Log for knowing if the geolocation was found and showing it
-        console.log("HTML5 goelocation found, lat: " + pos.lat + " lon: " + pos.lon);
-
-        //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
-        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-        HTTP.get('/data/2.5/forecast?lat=' + pos.lat + "&lon=" + pos.lon + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
-          //Sets the weather data returned fro OpenWeatherMap to the state of the component
-          this.setState({weather: [data], loading: false});
-        }.bind(this));
-        //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+            //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
+            //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+            HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+              //Sets the weather data returned fro OpenWeatherMap to the state of the component
+              this.setState({weather: [data], loading: false});
+            }.bind(this));
+            //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
+          }.bind(this));
       }.bind(this), function(error) {
         //If there is any errors getting the position the timeout will clear and fails the geolocation
           clearTimeout(location_timeout);
           geolocFail();
         });
     }
-
-    //change to else and remove comment to get current position
     else {
-      // Fallback if geolocation wasn't supported
+      // Fallback if geolocation wasn't supported or allowed
       //Fails the geolocation
-      //geolocFail();
 
       //Sends an request to OpenWeatherAPI with the default city "London"
-      HTTP.get('/data/2.5/forecast?q=Billdal&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+      HTTP.get('/data/2.5/forecast?q=Billdal&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
         //Sets the weather data returned fro OpenWeatherMap to the state of the component
         this.setState({weather: [data], loading: false});
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
@@ -85,9 +90,9 @@ var WeatherApp = React.createClass({
   //This function gets called when the form in the SearchBox is submited.
   handleSearch: function(search){
     //Sends an request to OpenWeatherAPI with the input of the user
-    HTTP.get('/data/2.5/forecast?q='+ search + '&units=metric&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+    HTTP.get('/data/2.5/forecast?q='+ search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
       //Sets the data returned to the state of the component
-      this.setState({ weather: [data], loading: false});
+      this.setState({ search: search, weather: [data], loading: false, gps: false});
     }.bind(this));
     //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
   },
@@ -110,6 +115,40 @@ var WeatherApp = React.createClass({
     $("#popupInfo").css("display", "none");
   },
 
+  changeUnits: function(temp){
+    if(temp == "°C" && temp.substring(1,2) != this.state.units){
+      this.setState({units: "metric"}, function () {
+        if(this.state.gps == true){
+          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+            this.setState({weather: [data]});
+          }.bind(this));
+        } else{
+          HTTP.get('/data/2.5/forecast?q='+ this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+            //Sets the data returned to the state of the component
+            this.setState({ weather: [data]});
+          }.bind(this));
+        }
+      });
+
+    } else if(temp == "°F" && temp.substring(1,2) != this.state.units){
+      this.setState({units: "imperial"}, function () {
+        if(this.state.gps == true){
+          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+            this.setState({weather: [data]});
+          }.bind(this));
+        } else{
+          HTTP.get('/data/2.5/forecast?q='+ this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then(function(data){
+            //Sets the data returned to the state of the component
+            this.setState({ weather: [data]});
+          }.bind(this));
+        }
+      });
+    }
+
+  },
+
   render: function() {
     //Not sure if a map function is needed because it only need specific values for "today"
 
@@ -117,6 +156,7 @@ var WeatherApp = React.createClass({
         return (
           <TodayWeatherBox
             key={key}
+            units={this.state.units}
             city={item.city.name}
             country={item.city.country}
             date={item.list[0].dt_txt}
@@ -124,9 +164,10 @@ var WeatherApp = React.createClass({
             windSpeed={item.list[0].wind.speed}
             windAngle={item.list[0].wind.deg}
             icon={item.list[0].weather[0].icon}
+            changeUnits={this.changeUnits}
           />
         );
-    });
+    }.bind(this));
 
 
     //Loops threw all the data in the state of weather.
@@ -134,6 +175,7 @@ var WeatherApp = React.createClass({
     var futureWeatherBox = this.state.weather.map(function(item, key) {
         return (
           <FutureWeatherBox
+            units={this.state.units}
             key={key}
             tempList={item.list}
             icon={item.list}
@@ -149,7 +191,7 @@ var WeatherApp = React.createClass({
 
             <Info closeInfo={this.closeInfo} />
 
-            <Day closeDay={this.closeDay} openInfo={this.openInfo} date={this.state.dayDate} days={this.state.days} />
+            <Day closeDay={this.closeDay} openInfo={this.openInfo} date={this.state.dayDate} days={this.state.days} units={this.state.units}/>
 
             <div className="col-sm-12" style={boxStyle}>
               <SearchBox onNewSearch={this.handleSearch}/>
