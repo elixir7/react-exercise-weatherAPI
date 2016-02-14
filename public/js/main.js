@@ -34828,7 +34828,7 @@ var WeatherApp = React.createClass({
 
           //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
           //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then((function (data) {
             //Sets the weather data returned fro OpenWeatherMap to the state of the component
             this.setState({ weather: [data], loading: false });
           }).bind(this));
@@ -34844,7 +34844,7 @@ var WeatherApp = React.createClass({
       //Fails the geolocation
 
       //Sends an request to OpenWeatherAPI with the default city "London"
-      HTTP.get('/data/2.5/forecast?q=Billdal&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+      HTTP.get('q=Billdal&units=' + this.state.units).then((function (data) {
         //Sets the weather data returned fro OpenWeatherMap to the state of the component
         this.setState({ weather: [data], loading: false });
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
@@ -34858,7 +34858,7 @@ var WeatherApp = React.createClass({
   //This function gets called when the form in the SearchBox is submited.
   handleSearch: function (search) {
     //Sends an request to OpenWeatherAPI with the input of the user
-    HTTP.get('/data/2.5/forecast?q=' + search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+    HTTP.get('q=' + search + '&units=' + this.state.units).then((function (data) {
       //Sets the data returned to the state of the component
       this.setState({ search: search, weather: [data], loading: false, gps: false });
     }).bind(this));
@@ -34887,12 +34887,12 @@ var WeatherApp = React.createClass({
     if (temp == "°C" && temp.substring(1, 2) != this.state.units) {
       this.setState({ units: "metric" }, function () {
         if (this.state.gps == true) {
-          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then((function (data) {
             //Sets the weather data returned fro OpenWeatherMap to the state of the component
             this.setState({ weather: [data] });
           }).bind(this));
         } else {
-          HTTP.get('/data/2.5/forecast?q=' + this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          HTTP.get('q=' + this.state.search + '&units=' + this.state.units).then((function (data) {
             //Sets the data returned to the state of the component
             this.setState({ weather: [data] });
           }).bind(this));
@@ -34901,13 +34901,11 @@ var WeatherApp = React.createClass({
     } else if (temp == "°F" && temp.substring(1, 2) != this.state.units) {
       this.setState({ units: "imperial" }, function () {
         if (this.state.gps == true) {
-          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+          HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then((function (data) {
             this.setState({ weather: [data] });
           }).bind(this));
         } else {
-          HTTP.get('/data/2.5/forecast?q=' + this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-            //Sets the data returned to the state of the component
+          HTTP.get('q=' + this.state.search + '&units=' + this.state.units).then((function (data) {
             this.setState({ weather: [data] });
           }).bind(this));
         }
@@ -34935,8 +34933,6 @@ var WeatherApp = React.createClass({
       });
     }).bind(this));
 
-    //Loops threw all the data in the state of weather.
-    //Should not need to be maped! If you don't map, it will render the component before the response from OpenWeatherMap arrives.
     var futureWeatherBox = this.state.weather.map((function (item, key) {
       return React.createElement(FutureWeatherBox, {
         units: this.state.units,
@@ -34993,11 +34989,12 @@ ReactDOM.render(Routes, document.getElementById('main'));
 
 },{"./Routes.jsx":208,"react":204,"react-dom":51}],221:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
-var baseUrl = 'http://api.openweathermap.org';
+var baseUrl = 'http://api.openweathermap.org/data/2.5/forecast?';
+var apiKey = '&appid=f06dae075f128fd55d49a2655d6e1a9a';
 
 var service = {
   get: function (url) {
-    return fetch(baseUrl + url).then(function (response) {
+    return fetch(baseUrl + url + apiKey).then(function (response) {
       return response.json();
     });
   }
