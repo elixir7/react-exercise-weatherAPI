@@ -34157,7 +34157,7 @@ var Info = React.createClass({
           React.createElement(
             "span",
             { style: iconText },
-            "shows where the wind is blowing."
+            "where the wind is blowing from."
           )
         )
       ),
