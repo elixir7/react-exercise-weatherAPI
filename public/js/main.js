@@ -34862,7 +34862,6 @@ var WeatherApp = React.createClass({
       //Sets the data returned to the state of the component
       this.setState({ search: search, weather: [data], loading: false, gps: false });
     }).bind(this));
-    //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
   },
 
   onDayClick: function (weatherArray, date) {
