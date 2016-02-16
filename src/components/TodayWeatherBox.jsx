@@ -23,6 +23,9 @@ var subMargin = {
 var clockIcon = {
   marginRight: 5
 };
+var iconDescText = {
+  marginTop: 10
+}
 
 //Takes a angle in degrees and returns an object with a direction where the wind is blowing from written in words and a class to show where the wind is blowing from. Used to display an icon and some text for the wind.
 var wind = function(deg){
@@ -230,12 +233,15 @@ var TodayWeatherBox = React.createClass({
           <div id="today-weather-box" className="row" >
             <div className="col-xs-12">
               <div className="row">
-                <div className="col-xs-6">
+                <div className="col-xs-4">
                   <h5>{this.props.city}, {this.props.country}</h5>
                   <h5>
                     <i className="fa fa-clock-o"  style={clockIcon}></i>
                     {this.props.date.substring(11, 16)}
                   </h5>
+                </div>
+                <div className="col-xs-4 text-center">
+                  <h5>{this.props.iconDesc}</h5>
                 </div>
                 <Units changeTemp={this.changeTemp}/>
               </div>
@@ -247,14 +253,11 @@ var TodayWeatherBox = React.createClass({
                 </div>
               </div>
               <div className="row" style={subMargin}>
-                <div className="col-xs-4 text-center">
+                <div className="col-xs-6 text-center">
                   <i className={wind(this.props.windAngle).compassClass} style={subContent}></i>
                   <span style={subText}>{wind(this.props.windAngle).direction}</span>
                 </div>
-                <div className="col-xs-4 text-center">
-                  <span style={subText}>{this.props.iconDesc}</span>
-                </div>
-                <div className="col-xs-4 text-center">
+                <div className="col-xs-6 text-center">
                   <i className="wi wi-strong-wind" style={subContent}></i>
                   <span style={subText}>{Math.round(this.props.windSpeed)} {evalSpeedUnit(this.props.units)}</span>
                 </div>

@@ -33477,13 +33477,13 @@ var descIcon = {
   marginBottom: 20
 };
 
-var descIcon = {
-  fontSize: 24,
-  marginBottom: 20
-};
-
 var dayTitle = {
   marginBottom: 50
+};
+
+var textStyle = {
+  fontSize: 18,
+  fontWeight: 300
 };
 
 var evalIcon = function (iconNumb, iconID) {
@@ -33635,7 +33635,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           item.dt_txt.substring(11, 16)
         );
       }
@@ -33645,7 +33645,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           React.createElement("i", { className: evalIcon(item.weather[0].icon, item.weather[0].id) })
         );
       }
@@ -33655,7 +33655,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           Math.round(item.wind.speed) + evalSpeedUnit(this.props.units)
         );
       }
@@ -33665,7 +33665,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           Math.round(item.main.temp) + evalTempUnit(this.props.units)
         );
       }
@@ -34423,6 +34423,9 @@ var subMargin = {
 var clockIcon = {
   marginRight: 5
 };
+var iconDescText = {
+  marginTop: 10
+};
 
 //Takes a angle in degrees and returns an object with a direction where the wind is blowing from written in words and a class to show where the wind is blowing from. Used to display an icon and some text for the wind.
 var wind = function (deg) {
@@ -34639,7 +34642,7 @@ var TodayWeatherBox = React.createClass({
           { className: 'row' },
           React.createElement(
             'div',
-            { className: 'col-xs-6' },
+            { className: 'col-xs-4' },
             React.createElement(
               'h5',
               null,
@@ -34652,6 +34655,15 @@ var TodayWeatherBox = React.createClass({
               null,
               React.createElement('i', { className: 'fa fa-clock-o', style: clockIcon }),
               this.props.date.substring(11, 16)
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'col-xs-4 text-center' },
+            React.createElement(
+              'h5',
+              null,
+              this.props.iconDesc
             )
           ),
           React.createElement(Units, { changeTemp: this.changeTemp })
@@ -34685,7 +34697,7 @@ var TodayWeatherBox = React.createClass({
           { className: 'row', style: subMargin },
           React.createElement(
             'div',
-            { className: 'col-xs-4 text-center' },
+            { className: 'col-xs-6 text-center' },
             React.createElement('i', { className: wind(this.props.windAngle).compassClass, style: subContent }),
             React.createElement(
               'span',
@@ -34695,16 +34707,7 @@ var TodayWeatherBox = React.createClass({
           ),
           React.createElement(
             'div',
-            { className: 'col-xs-4 text-center' },
-            React.createElement(
-              'span',
-              { style: subText },
-              this.props.iconDesc
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-xs-4 text-center' },
+            { className: 'col-xs-6 text-center' },
             React.createElement('i', { className: 'wi wi-strong-wind', style: subContent }),
             React.createElement(
               'span',
@@ -34726,7 +34729,7 @@ module.exports = TodayWeatherBox;
 var React = require('react');
 
 var container = {
-  marginTop: 20
+  marginTop: 10
 };
 
 var unit = {
@@ -34743,7 +34746,7 @@ var Units = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      { className: "col-xs-6 text-right" },
+      { className: "col-xs-4 text-right" },
       React.createElement(
         "div",
         { style: container },

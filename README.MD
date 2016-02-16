@@ -11,6 +11,7 @@ Change background color depending on temperature or use the codedrop.com amazing
 Fix to not use the custom.css styling but instead use the inline styling in the component.
 Refactor to ES6
 Use Webpack instead of browserify
+Update Day view with larger icons
 
 ### Done
 Start-view for the user to read how it works and if they want to use Geolocation or search by city. (check)
