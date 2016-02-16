@@ -33477,13 +33477,13 @@ var descIcon = {
   marginBottom: 20
 };
 
-var descIcon = {
-  fontSize: 24,
-  marginBottom: 20
-};
-
 var dayTitle = {
   marginBottom: 50
+};
+
+var textStyle = {
+  fontSize: 18,
+  fontWeight: 300
 };
 
 var evalIcon = function (iconNumb, iconID) {
@@ -33635,7 +33635,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           item.dt_txt.substring(11, 16)
         );
       }
@@ -33645,7 +33645,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           React.createElement("i", { className: evalIcon(item.weather[0].icon, item.weather[0].id) })
         );
       }
@@ -33655,7 +33655,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           Math.round(item.wind.speed) + evalSpeedUnit(this.props.units)
         );
       }
@@ -33665,7 +33665,7 @@ var Day = React.createClass({
       if (item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)) {
         return React.createElement(
           "p",
-          { key: key },
+          { key: key, style: textStyle },
           Math.round(item.main.temp) + evalTempUnit(this.props.units)
         );
       }
@@ -34157,7 +34157,7 @@ var Info = React.createClass({
           React.createElement(
             "span",
             { style: iconText },
-            "shows where the wind is blowing."
+            "where the wind is blowing from."
           )
         )
       ),
@@ -34423,6 +34423,9 @@ var subMargin = {
 var clockIcon = {
   marginRight: 5
 };
+var iconDescText = {
+  marginTop: 10
+};
 
 //Takes a angle in degrees and returns an object with a direction where the wind is blowing from written in words and a class to show where the wind is blowing from. Used to display an icon and some text for the wind.
 var wind = function (deg) {
@@ -34639,7 +34642,7 @@ var TodayWeatherBox = React.createClass({
           { className: 'row' },
           React.createElement(
             'div',
-            { className: 'col-xs-6' },
+            { className: 'col-xs-4' },
             React.createElement(
               'h5',
               null,
@@ -34652,6 +34655,15 @@ var TodayWeatherBox = React.createClass({
               null,
               React.createElement('i', { className: 'fa fa-clock-o', style: clockIcon }),
               this.props.date.substring(11, 16)
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'col-xs-4 text-center' },
+            React.createElement(
+              'h5',
+              null,
+              this.props.iconDesc
             )
           ),
           React.createElement(Units, { changeTemp: this.changeTemp })
@@ -34685,7 +34697,7 @@ var TodayWeatherBox = React.createClass({
           { className: 'row', style: subMargin },
           React.createElement(
             'div',
-            { className: 'col-xs-4 text-center' },
+            { className: 'col-xs-6 text-center' },
             React.createElement('i', { className: wind(this.props.windAngle).compassClass, style: subContent }),
             React.createElement(
               'span',
@@ -34695,16 +34707,7 @@ var TodayWeatherBox = React.createClass({
           ),
           React.createElement(
             'div',
-            { className: 'col-xs-4 text-center' },
-            React.createElement(
-              'span',
-              { style: subText },
-              this.props.iconDesc
-            )
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-xs-4 text-center' },
+            { className: 'col-xs-6 text-center' },
             React.createElement('i', { className: 'wi wi-strong-wind', style: subContent }),
             React.createElement(
               'span',
@@ -34726,7 +34729,7 @@ module.exports = TodayWeatherBox;
 var React = require('react');
 
 var container = {
-  marginTop: 20
+  marginTop: 10
 };
 
 var unit = {
@@ -34743,7 +34746,7 @@ var Units = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      { className: "col-xs-6 text-right" },
+      { className: "col-xs-4 text-right" },
       React.createElement(
         "div",
         { style: container },
@@ -34828,7 +34831,7 @@ var WeatherApp = React.createClass({
 
           //Sends an request to OpenWeatherAPI with the users position (latitude and longitude)
           //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
-          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then((function (data) {
             //Sets the weather data returned fro OpenWeatherMap to the state of the component
             this.setState({ weather: [data], loading: false });
           }).bind(this));
@@ -34844,7 +34847,7 @@ var WeatherApp = React.createClass({
       //Fails the geolocation
 
       //Sends an request to OpenWeatherAPI with the default city "London"
-      HTTP.get('/data/2.5/forecast?q=Billdal&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+      HTTP.get('q=Billdal&units=' + this.state.units).then((function (data) {
         //Sets the weather data returned fro OpenWeatherMap to the state of the component
         this.setState({ weather: [data], loading: false });
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
@@ -34858,11 +34861,10 @@ var WeatherApp = React.createClass({
   //This function gets called when the form in the SearchBox is submited.
   handleSearch: function (search) {
     //Sends an request to OpenWeatherAPI with the input of the user
-    HTTP.get('/data/2.5/forecast?q=' + search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+    HTTP.get('q=' + search + '&units=' + this.state.units).then((function (data) {
       //Sets the data returned to the state of the component
       this.setState({ search: search, weather: [data], loading: false, gps: false });
     }).bind(this));
-    //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
   },
 
   onDayClick: function (weatherArray, date) {
@@ -34887,12 +34889,12 @@ var WeatherApp = React.createClass({
     if (temp == "°C" && temp.substring(1, 2) != this.state.units) {
       this.setState({ units: "metric" }, function () {
         if (this.state.gps == true) {
-          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then((function (data) {
             //Sets the weather data returned fro OpenWeatherMap to the state of the component
             this.setState({ weather: [data] });
           }).bind(this));
         } else {
-          HTTP.get('/data/2.5/forecast?q=' + this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
+          HTTP.get('q=' + this.state.search + '&units=' + this.state.units).then((function (data) {
             //Sets the data returned to the state of the component
             this.setState({ weather: [data] });
           }).bind(this));
@@ -34901,13 +34903,11 @@ var WeatherApp = React.createClass({
     } else if (temp == "°F" && temp.substring(1, 2) != this.state.units) {
       this.setState({ units: "imperial" }, function () {
         if (this.state.gps == true) {
-          HTTP.get('/data/2.5/forecast?lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-            //Sets the weather data returned fro OpenWeatherMap to the state of the component
+          HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then((function (data) {
             this.setState({ weather: [data] });
           }).bind(this));
         } else {
-          HTTP.get('/data/2.5/forecast?q=' + this.state.search + '&units=' + this.state.units + '&appid=f06dae075f128fd55d49a2655d6e1a9a').then((function (data) {
-            //Sets the data returned to the state of the component
+          HTTP.get('q=' + this.state.search + '&units=' + this.state.units).then((function (data) {
             this.setState({ weather: [data] });
           }).bind(this));
         }
@@ -34935,8 +34935,6 @@ var WeatherApp = React.createClass({
       });
     }).bind(this));
 
-    //Loops threw all the data in the state of weather.
-    //Should not need to be maped! If you don't map, it will render the component before the response from OpenWeatherMap arrives.
     var futureWeatherBox = this.state.weather.map((function (item, key) {
       return React.createElement(FutureWeatherBox, {
         units: this.state.units,
@@ -34993,11 +34991,12 @@ ReactDOM.render(Routes, document.getElementById('main'));
 
 },{"./Routes.jsx":208,"react":204,"react-dom":51}],221:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
-var baseUrl = 'http://api.openweathermap.org';
+var baseUrl = 'http://api.openweathermap.org/data/2.5/forecast?';
+var apiKey = '&appid=f06dae075f128fd55d49a2655d6e1a9a';
 
 var service = {
   get: function (url) {
-    return fetch(baseUrl + url).then(function (response) {
+    return fetch(baseUrl + url + apiKey).then(function (response) {
       return response.json();
     });
   }

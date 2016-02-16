@@ -20,13 +20,13 @@ var descIcon = {
   marginBottom: 20
 }
 
-var descIcon = {
-  fontSize: 24,
-  marginBottom: 20
-}
-
 var dayTitle = {
   marginBottom: 50
+}
+
+var textStyle = {
+  fontSize: 18,
+  fontWeight: 300
 }
 
 var evalIcon = function(iconNumb, iconID){
@@ -176,7 +176,7 @@ var Day = React.createClass({
     var times = this.props.days.map(function(item, key){
       if(item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)){
         return(
-          <p key={key}>{item.dt_txt.substring(11,16)}</p>
+          <p key={key} style={textStyle}>{item.dt_txt.substring(11,16)}</p>
         );
       }
     }.bind(this));
@@ -184,7 +184,7 @@ var Day = React.createClass({
     var weatherIcons = this.props.days.map(function(item, key){
       if(item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)){
         return(
-          <p key={key}><i className={evalIcon(item.weather[0].icon, item.weather[0].id)} /></p>
+          <p key={key} style={textStyle}><i className={evalIcon(item.weather[0].icon, item.weather[0].id)} /></p>
         );
       }
     }.bind(this));
@@ -192,7 +192,7 @@ var Day = React.createClass({
     var winds = this.props.days.map(function(item, key){
       if(item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)){
         return(
-          <p key={key}>{Math.round(item.wind.speed) + evalSpeedUnit(this.props.units)}</p>
+          <p key={key} style={textStyle}>{Math.round(item.wind.speed) + evalSpeedUnit(this.props.units)}</p>
         );
       }
     }.bind(this));
@@ -200,7 +200,7 @@ var Day = React.createClass({
     var temps = this.props.days.map(function(item, key){
       if(item.dt_txt.substring(8, 10) == this.props.date.substring(4, 6)){
         return(
-          <p key={key}>{Math.round(item.main.temp) + evalTempUnit(this.props.units)}</p>
+          <p key={key} style={textStyle}>{Math.round(item.main.temp) + evalTempUnit(this.props.units)}</p>
         );
       }
     }.bind(this));

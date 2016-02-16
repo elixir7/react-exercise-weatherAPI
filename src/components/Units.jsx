@@ -1,7 +1,7 @@
 var React = require('react');
 
 var container = {
-  marginTop: 20
+  marginTop: 10
 }
 
 var unit = {
@@ -15,7 +15,7 @@ var Units = React.createClass({
 
   render: function(){
     return (
-      <div className="col-xs-6 text-right">
+      <div className="col-xs-4 text-right">
         <div style={container}>
           <span onClick={this.tempClick} style={unit}>°C</span>
           <span> / </span>

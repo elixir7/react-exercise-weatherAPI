@@ -73,7 +73,7 @@ var Info = React.createClass({
         <div className="row  text-center" style={marginBottom}>
           <div className="col-sm-12">
             <i className="wi wi-wind wi-towards-nne" style={infoIcons}/>
-            <span style={iconText}>shows where the wind is blowing.</span>
+            <span style={iconText}>where the wind is blowing from.</span>
           </div>
         </div>
         <div className="row  text-center">
