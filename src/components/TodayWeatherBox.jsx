@@ -24,7 +24,8 @@ var clockIcon = {
   marginRight: 5
 };
 var iconDescText = {
-  marginTop: 10
+  marginTop: 10,
+  fontWeight: 300
 }
 
 //Takes a angle in degrees and returns an object with a direction where the wind is blowing from written in words and a class to show where the wind is blowing from. Used to display an icon and some text for the wind.
@@ -241,7 +242,7 @@ var TodayWeatherBox = React.createClass({
                   </h5>
                 </div>
                 <div className="col-xs-4 text-center">
-                  <h5>{this.props.iconDesc}</h5>
+                  <h5 style={iconDescText}>{this.props.iconDesc}</h5>
                 </div>
                 <Units changeTemp={this.changeTemp}/>
               </div>

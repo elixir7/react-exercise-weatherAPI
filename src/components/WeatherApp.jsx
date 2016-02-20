@@ -28,16 +28,16 @@ var WeatherApp = React.createClass({
         lat: "",
         lon: "",
         search: "",
-        weather: [],
+        weather: null,
         units: "metric",
         loading: true,
-        days: [],
+        days: null,
         dayDate: ""
       }
     );
   },
 
-  componentWillMount: function(){
+  componentDidMount: function(){
     // Tries HTML5 geolocation
     if (navigator.geolocation) {
       //Sets a timeout on 10s to let the navigator to find geolocation
@@ -61,7 +61,7 @@ var WeatherApp = React.createClass({
             //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
             HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then(function(data){
               //Sets the weather data returned fro OpenWeatherMap to the state of the component
-              this.setState({weather: [data], loading: false});
+              this.setState({weather: data, loading: false});
             }.bind(this));
             //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
           }.bind(this));
@@ -78,7 +78,7 @@ var WeatherApp = React.createClass({
       //Sends an request to OpenWeatherAPI with the default city "London"
       HTTP.get('q=Billdal&units=' + this.state.units).then(function(data){
         //Sets the weather data returned fro OpenWeatherMap to the state of the component
-        this.setState({weather: [data], loading: false});
+        this.setState({weather: data, loading: false});
         //IMPORTNAT to bind to this (.bind(this)) because if not, this will refer to the function and not the React component "WeatherApp"
       }.bind(this));
     }
@@ -92,14 +92,13 @@ var WeatherApp = React.createClass({
     //Sends an request to OpenWeatherAPI with the input of the user
     HTTP.get('q='+ search + '&units=' + this.state.units).then(function(data){
       //Sets the data returned to the state of the component
-      this.setState({ search: search, weather: [data], loading: false, gps: false});
+      this.setState({ search: search, weather: data, loading: false, gps: false});
     }.bind(this));
   },
 
   onDayClick: function(weatherArray, date){
     $("#popupDay").css("display", "block");
     this.setState({days: weatherArray, dayDate: date});
-    console.log(weatherArray);
   },
 
   closeDay: function(){
@@ -120,12 +119,12 @@ var WeatherApp = React.createClass({
         if(this.state.gps == true){
           HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then(function(data){
             //Sets the weather data returned fro OpenWeatherMap to the state of the component
-            this.setState({weather: [data]});
+            this.setState({weather: data});
           }.bind(this));
         } else{
           HTTP.get('q='+ this.state.search + '&units=' + this.state.units).then(function(data){
             //Sets the data returned to the state of the component
-            this.setState({ weather: [data]});
+            this.setState({ weather: data});
           }.bind(this));
         }
       });
@@ -134,11 +133,11 @@ var WeatherApp = React.createClass({
       this.setState({units: "imperial"}, function () {
         if(this.state.gps == true){
           HTTP.get('lat=' + this.state.lat + "&lon=" + this.state.lon + '&units=' + this.state.units).then(function(data){
-            this.setState({weather: [data]});
+            this.setState({weather: data});
           }.bind(this));
         } else{
           HTTP.get('q='+ this.state.search + '&units=' + this.state.units).then(function(data){
-            this.setState({ weather: [data]});
+            this.setState({ weather: data});
           }.bind(this));
         }
       });
@@ -146,55 +145,52 @@ var WeatherApp = React.createClass({
   },
 
   render: function() {
-    //Not sure if a map function is needed because it only need specific values for "today"
 
-    var todayWeatherBox = this.state.weather.map(function(item, key) {
-        return (
-          <TodayWeatherBox
-            key={key}
-            units={this.state.units}
-            city={item.city.name}
-            country={item.city.country}
-            date={item.list[0].dt_txt}
-            temp={item.list[0].main.temp}
-            windSpeed={item.list[0].wind.speed}
-            windAngle={item.list[0].wind.deg}
-            icon={item.list[0].weather[0].icon}
-            iconID={item.list[0].weather[0].id}
-            iconDesc={item.list[0].weather[0].description}
-            changeUnits={this.changeUnits}
-          />
-        );
-    }.bind(this));
-
-    var futureWeatherBox = this.state.weather.map(function(item, key) {
-        return (
-          <FutureWeatherBox
-            units={this.state.units}
-            key={key}
-            tempList={item.list}
-            icon={item.list}
-            onDayClick={this.onDayClick}
-            wholeDay={this.state.weather[0].list}
-          />
-        );
-    }.bind(this));
     return (
       <div className="row">
         <div className="col-sm-4">
           <div className="row">
 
             <Info closeInfo={this.closeInfo} />
-
-            <Day closeDay={this.closeDay} openInfo={this.openInfo} date={this.state.dayDate} days={this.state.days} units={this.state.units}/>
+            {(() => {
+              if (this.state.days)
+               return (
+                <Day closeDay={this.closeDay} openInfo={this.openInfo} date={this.state.dayDate} days={this.state.days} units={this.state.units}/>
+               );
+            })()}
 
             <div className="col-sm-12" style={boxStyle}>
               <SearchBox onNewSearch={this.handleSearch}/>
               <Spinner loading={this.state.loading} />
-              {todayWeatherBox}
-              {futureWeatherBox}
+              {(() => {
+                if (this.state.weather) {
+                  return (
+                    <div>
+                      <TodayWeatherBox
+                        city={this.state.weather.city.name}
+                        country={this.state.weather.city.country}
+                        date={this.state.weather.list[0].dt_txt}
+                        temp={this.state.weather.list[0].main.temp}
+                        windSpeed={this.state.weather.list[0].wind.speed}
+                        windAngle={this.state.weather.list[0].wind.deg}
+                        icon={this.state.weather.list[0].weather[0].icon}
+                        iconID={this.state.weather.list[0].weather[0].id}
+                        iconDesc={this.state.weather.list[0].weather[0].description}
+                        units={this.state.units}
+                        changeUnits={this.changeUnits}
+                      />
+                      <FutureWeatherBox
+                        units={this.state.units}
+                        tempList={this.state.weather.list}
+                        icon={this.state.weather.list}
+                        onDayClick={this.onDayClick}
+                        wholeDay={this.state.weather.list}
+                      />
+                  </div>
+                  );
+                }
+              })()}
             </div>
-
           </div>
         </div>
       </div>
@@ -203,13 +199,3 @@ var WeatherApp = React.createClass({
 });
 
 module.exports = WeatherApp;
-/* TodayWeatherBox without mapping it.
-<TodayWeatherBox
-  city={this.state.weather[0].city.name}
-  country={this.state.weather[0].city.country}
-  date={this.state.weather[0].list[0].dt_txt}
-  temp={this.state.weather[0].list[0].main.temp}
-  windSpeed={this.state.weather[0].list[0].wind.speed}
-  windAngle={this.state.weather[0].list[0].wind.deg}
-  icon={this.state.weather[0].list[0].weather[0].icon}
-/>*/
