@@ -6,7 +6,7 @@
   "scripts": {
     "start": "watchify src/main.jsx -v -t [ babelify --presets [react] ] -o public/js/main.js",
     "deploy": "ghpages",
-    "server": "http-server -p 3000"
+    "server": "http-server -p 6060"
   },
   "repository": {
     "type": "git",
