@@ -33757,35 +33757,6 @@ var evalDate = function (unix_timestamp) {
   var n = weekday[d.getDay()];
   return n;
 };
-var evalMonth = function (month) {
-  var monthInWords;
-  if (month == "01") {
-    monthInWords = "Jan";
-  } else if (month == "02") {
-    monthInWords = "Feb";
-  } else if (month == "03") {
-    monthInWords = "Mar";
-  } else if (month == "04") {
-    monthInWords = "Apr";
-  } else if (month == "05") {
-    monthInWords = "May";
-  } else if (month == "06") {
-    monthInWords = "Jun";
-  } else if (month == "07") {
-    monthInWords = "Jul";
-  } else if (month == "08") {
-    monthInWords = "Aug";
-  } else if (month == "09") {
-    monthInWords = "Sep";
-  } else if (month == "010") {
-    monthInWords = "Oct";
-  } else if (month == "11") {
-    monthInWords = "Nov";
-  } else if (month == "12") {
-    monthInWords = "Dec";
-  }
-  return monthInWords;
-};
 
 var FutureWeatherBox = React.createClass({
   displayName: 'FutureWeatherBox',
