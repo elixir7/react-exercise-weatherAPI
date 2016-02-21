@@ -5,6 +5,20 @@ var boxStyle = {
   backgroundColor: "#e7e7e7"
 };
 
+var evalDate = function(unix_timestamp){
+  var d = new Date(unix_timestamp * 1000);
+  var weekday = new Array(7);
+  weekday[0] = "Sunday";
+  weekday[1] = "Monday";
+  weekday[2] = "Tuesday";
+  weekday[3] = "Wednesday";
+  weekday[4] = "Thursday";
+  weekday[5] = "Friday";
+  weekday[6] = "Saturday";
+
+  var n = weekday[d.getDay()];
+  return n;
+}
 var evalMonth = function(month){
   var monthInWords;
   if(month == "01"){
@@ -47,7 +61,7 @@ var FutureWeatherBox = React.createClass({
           <FutureWeatherBoxItem
             key={key}
             units={this.props.units}
-            date={evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10)}
+            date={evalDate(item.dt)}
             temp={item.main.temp}
             icon={item.weather[0].icon}
             iconID={item.weather[0].id}

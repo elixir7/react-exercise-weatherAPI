@@ -147,9 +147,9 @@ var evalIcon = function(iconNumb, iconID){
 };
 
 var evalTempUnit = function(unit){
-  if(unit == "metric"){
+  if(unit === "metric"){
     return "°C"
-  } else if(unit == "imperial"){
+  } else if(unit === "imperial"){
     return "°F"
   }
 }
