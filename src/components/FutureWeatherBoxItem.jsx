@@ -171,7 +171,10 @@ var FutureWeatherBoxItem = React.createClass({
                 <i className={evalIcon(this.props.icon, this.props.iconID)} style={iconStyle}></i>
               </div>
               <div className="col-xs-4">
-                <h5 className="pull-right">{Math.round(this.props.temp)} {evalTempUnit(this.props.units)}</h5>
+                <h5 className="pull-right">
+                  {Math.round(this.props.temp)}
+                  {evalTempUnit(this.props.units)}
+                </h5>
               </div>
             </div>
           </div>

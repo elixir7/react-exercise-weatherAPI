@@ -34021,7 +34021,6 @@ var FutureWeatherBoxItem = React.createClass({
               'h5',
               { className: 'pull-right' },
               Math.round(this.props.temp),
-              ' ',
               evalTempUnit(this.props.units)
             )
           )
