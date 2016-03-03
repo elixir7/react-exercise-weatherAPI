@@ -12,6 +12,7 @@ Fix to not use the custom.css styling but instead use the inline styling in the 
 Refactor to ES6
 Use Webpack instead of browserify
 Update Day view with larger icons
+Instead of having loading state to render the spinning loader, just use else statement when rendering today and futureweatherbox.
 
 ### Done
 Start-view for the user to read how it works and if they want to use Geolocation or search by city. (check)
