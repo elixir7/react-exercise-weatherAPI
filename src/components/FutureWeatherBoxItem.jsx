@@ -157,7 +157,7 @@ var evalTempUnit = function(unit){
 var FutureWeatherBoxItem = React.createClass({
   //Clicking on an element runs the onClick function which runs the "dayClicked function in FutureWeatherBox.jsx"
   onClick: function(){
-    this.props.dayClicked(this.props.wholeDay, this.props.date);
+    this.props.dayClicked(this.props.wholeDay, this.props.unixDate);
   },
   render: function() {
       return (

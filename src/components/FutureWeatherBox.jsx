@@ -20,6 +20,36 @@ var evalDate = function(unix_timestamp){
   return n;
 }
 
+var evalMonth = function(month){
+  var monthInWords;
+  if(month == "01"){
+    monthInWords = "Jan"
+  } else if(month == "02"){
+    monthInWords = "Feb"
+  } else if(month == "03"){
+    monthInWords = "Mar"
+  } else if(month == "04"){
+    monthInWords = "Apr"
+  } else if(month == "05"){
+    monthInWords = "May"
+  } else if(month == "06"){
+    monthInWords = "Jun"
+  } else if(month == "07"){
+    monthInWords = "Jul"
+  } else if(month == "08"){
+    monthInWords = "Aug"
+  } else if(month == "09"){
+    monthInWords = "Sep"
+  } else if(month == "010"){
+    monthInWords = "Oct"
+  } else if(month == "11"){
+    monthInWords = "Nov"
+  } else if(month == "12"){
+    monthInWords = "Dec"
+  }
+  return monthInWords;
+}
+
 var FutureWeatherBox = React.createClass({
   //Callbackfunction which runs "onDayClick" in "WeatherApp.jsx"
   dayClicked: function(weatherArray, date){
@@ -27,12 +57,13 @@ var FutureWeatherBox = React.createClass({
   },
   render: function() {
     var futureWeatherBoxItem = this.props.tempList.map(function(item, key) {
-      if(item.dt_txt.substring(11, 13) == "12"){
+      if(item.dt_txt.substring(11, 13) == "15"){
         return (
           <FutureWeatherBoxItem
             key={key}
             units={this.props.units}
             date={evalDate(item.dt)}
+            unixDate={evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10)}
             temp={item.main.temp}
             icon={item.weather[0].icon}
             iconID={item.weather[0].id}
