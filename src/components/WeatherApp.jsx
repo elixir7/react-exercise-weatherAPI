@@ -11,8 +11,7 @@ var Spinner = require('./Spinner.jsx')
 
 
 var boxStyle = {
-  backgroundColor: "#46ca75",
-  height: "100vh"
+  backgroundColor: "#46ca75"
 };
 
 var pos = {
@@ -97,8 +96,9 @@ var WeatherApp = React.createClass({
   },
 
   onDayClick: function(weatherArray, date){
-    $("#popupDay").css("display", "block");
-    this.setState({days: weatherArray, dayDate: date});
+    this.setState({days: weatherArray, dayDate: date}, function(){
+      $("#popupDay").css("display", "block");
+    });
   },
 
   closeDay: function(){
@@ -152,6 +152,7 @@ var WeatherApp = React.createClass({
           <div className="row">
 
             <Info closeInfo={this.closeInfo} />
+
             {(() => {
               if (this.state.days)
                return (

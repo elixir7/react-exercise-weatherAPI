@@ -33743,6 +33743,21 @@ var boxStyle = {
   backgroundColor: "#e7e7e7"
 };
 
+var evalDate = function (unix_timestamp) {
+  var d = new Date(unix_timestamp * 1000);
+  var weekday = new Array(7);
+  weekday[0] = "Sunday";
+  weekday[1] = "Monday";
+  weekday[2] = "Tuesday";
+  weekday[3] = "Wednesday";
+  weekday[4] = "Thursday";
+  weekday[5] = "Friday";
+  weekday[6] = "Saturday";
+
+  var n = weekday[d.getDay()];
+  return n;
+};
+
 var evalMonth = function (month) {
   var monthInWords;
   if (month == "01") {
@@ -33782,11 +33797,12 @@ var FutureWeatherBox = React.createClass({
   },
   render: function () {
     var futureWeatherBoxItem = this.props.tempList.map((function (item, key) {
-      if (item.dt_txt.substring(11, 13) == "12") {
+      if (item.dt_txt.substring(11, 13) == "15") {
         return React.createElement(FutureWeatherBoxItem, {
           key: key,
           units: this.props.units,
-          date: evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10),
+          date: evalDate(item.dt),
+          unixDate: evalMonth(item.dt_txt.substring(5, 7)) + " " + item.dt_txt.substring(8, 10),
           temp: item.main.temp,
           icon: item.weather[0].icon,
           iconID: item.weather[0].id,
@@ -33960,9 +33976,9 @@ var evalIcon = function (iconNumb, iconID) {
 };
 
 var evalTempUnit = function (unit) {
-  if (unit == "metric") {
+  if (unit === "metric") {
     return "°C";
-  } else if (unit == "imperial") {
+  } else if (unit === "imperial") {
     return "°F";
   }
 };
@@ -33972,7 +33988,7 @@ var FutureWeatherBoxItem = React.createClass({
 
   //Clicking on an element runs the onClick function which runs the "dayClicked function in FutureWeatherBox.jsx"
   onClick: function () {
-    this.props.dayClicked(this.props.wholeDay, this.props.date);
+    this.props.dayClicked(this.props.wholeDay, this.props.unixDate);
   },
   render: function () {
     return React.createElement(
@@ -34786,8 +34802,7 @@ var Info = require('./Info.jsx');
 var Spinner = require('./Spinner.jsx');
 
 var boxStyle = {
-  backgroundColor: "#46ca75",
-  height: "100vh"
+  backgroundColor: "#46ca75"
 };
 
 var pos = {
@@ -34869,8 +34884,9 @@ var WeatherApp = React.createClass({
   },
 
   onDayClick: function (weatherArray, date) {
-    $("#popupDay").css("display", "block");
-    this.setState({ days: weatherArray, dayDate: date });
+    this.setState({ days: weatherArray, dayDate: date }, function () {
+      $("#popupDay").css("display", "block");
+    });
   },
 
   closeDay: function () {
